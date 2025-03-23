@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tools Website</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/tool.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="theme-default">
+    <!-- Header Section -->
+    <header>
+        <div class="header-left">
+            <button id="sidebar-toggle" class="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="site-title">
+                <a href="#home" data-route="home">
+                    <i class="fas fa-tools"></i>
+                    <h1 id="site-title-text">Advanced Tools</h1>
+                </a>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search tools...">
+                <button id="search-button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="settings-dropdown">
+                <button class="settings-btn"><i class="fas fa-cog"></i></button>
+                <div class="settings-content">
+                    <div class="theme-selector">
+                        <p>Theme:</p>
+                        <button class="theme-btn" data-theme="default">Default</button>
+                        <button class="theme-btn" data-theme="dark">Dark</button>
+                        <button class="theme-btn" data-theme="light">Light</button>
+                    </div>
+                    <div class="dark-mode-toggle">
+                        <p>Dark Mode:</p>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="profile-image">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-dropdown">
+                    <a href="login.html">Login</a>
+                    <a href="admin/index.html">Admin Panel</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul id="tools-menu">
+                    <!-- Tool links will be dynamically loaded here -->
+                    <li><a href="#home" data-route="home"><i class="fas fa-home"></i><span>Home</span></a></li>
+                    <li><a href="#text-analyzer" data-tool="text-analyzer"><i class="fas fa-font"></i><span>Text Analyzer</span></a></li>
+                    <li><a href="#password-generator" data-tool="password-generator"><i class="fas fa-key"></i><span>Password Generator</span></a></li>
+                    <li><a href="#image-resizer" data-tool="image-resizer"><i class="fas fa-image"></i><span>Image Resizer</span></a></li>
+                    <li><a href="#qr-code-generator" data-tool="qr-code-generator"><i class="fas fa-qrcode"></i><span>QR Code Generator</span></a></li>
+                    <li><a href="#text-to-speech" data-tool="text-to-speech"><i class="fas fa-volume-up"></i><span>Text to Speech</span></a></li>
+                    <li><a href="#mp4-to-mp3" data-tool="mp4-to-mp3"><i class="fas fa-file-audio"></i><span>MP4 to MP3</span></a></li>
+                    <li><a href="#online-calculator" data-tool="online-calculator"><i class="fas fa-calculator"></i><span>Online Calculator</span></a></li>
+                    <li><a href="#yt-thumb-downloader" data-tool="yt-thumb-downloader"><i class="fab fa-youtube"></i><span>YT Thumb Downloader</span></a></li>
+                    <li><a href="#yt-video-downloader" data-tool="yt-video-downloader"><i class="fab fa-youtube"></i><span>YT Video Downloader</span></a></li>
+                    <li><a href="#pdf-merger" data-tool="pdf-merger"><i class="fas fa-file-pdf"></i><span>PDF Merger</span></a></li>
+                    <li><a href="#grammar-checker" data-tool="grammar-checker"><i class="fas fa-spell-check"></i><span>Grammar Checker</span></a></li>
+                    <li><a href="#background-remover" data-tool="background-remover"><i class="fas fa-cut"></i><span>Background Remover</span></a></li>
+                    <li><a href="#pdf-editor" data-tool="pdf-editor"><i class="fas fa-edit"></i><span>PDF Editor</span></a></li>
+                    <li><a href="#code-generator" data-tool="code-generator"><i class="fas fa-code"></i><span>Code Generator</span></a></li>
+                    <li><a href="#age-calculator" data-tool="age-calculator"><i class="fas fa-birthday-cake"></i><span>Age Calculator</span></a></li>
+                    <li><a href="#emi-calculator" data-tool="emi-calculator"><i class="fas fa-money-bill"></i><span>EMI Calculator</span></a></li>
+                    <li><a href="#color-converter" data-tool="color-converter"><i class="fas fa-palette"></i><span>Color Converter</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb" id="breadcrumb">
+                <a href="#home" data-route="home">Home</a>
+                <span class="separator">&gt;</span>
+                <span class="current-page">Tools</span>
+            </div>
+
+            <!-- Main Content Area -->
+            <main class="content" id="main-content">
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="#about" data-route="about">About</a>
+            <a href="#contact" data-route="contact">Contact</a>
+            <a href="#privacy" data-route="privacy">Privacy Policy</a>
+            <a href="#guide" data-route="guide">User Guide</a>
+        </div>
+        <div class="copyright" id="copyright">
+            &copy; <span id="current-year">2023</span> Advanced Tools Website. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+</body>
+</html> 

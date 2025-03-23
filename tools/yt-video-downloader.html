@@ -1,0 +1,756 @@
+<!-- Add meta tag for the tool icon -->
+<meta name="tool-icon" content="fab fa-youtube">
+<div class="tool-content" data-tool-icon="fab fa-youtube">
+    <style>
+        /* YouTube Video Downloader Specific Styles */
+        .yt-downloader-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .input-section {
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .url-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .url-input-group input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .url-input-group input:focus {
+            border-color: var(--primary-color, #007bff);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .examples {
+            font-size: 0.875rem;
+            color: var(--muted-text-color, #6c757d);
+            margin-bottom: 1rem;
+        }
+        
+        .examples code {
+            background-color: var(--hover-bg-color, #e9ecef);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .status-message {
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .status-message.error {
+            background-color: var(--error-bg-color, #f8d7da);
+            color: var(--error-color, #dc3545);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .status-message.success {
+            background-color: var(--success-bg-color, #d4edda);
+            color: var(--success-color, #28a745);
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        .status-message.info {
+            background-color: var(--info-bg-color, #d1ecf1);
+            color: var(--info-color, #17a2b8);
+            border: 1px solid rgba(23, 162, 184, 0.2);
+        }
+        
+        .status-message.warning {
+            background-color: var(--warning-bg-color, #fff3cd);
+            color: var(--warning-color, #856404);
+            border: 1px solid rgba(133, 100, 4, 0.2);
+        }
+        
+        .video-result {
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .video-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .video-result-header h4 {
+            margin: 0;
+        }
+        
+        .video-info {
+            display: flex;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 600px) {
+            .video-info {
+                flex-direction: column;
+            }
+        }
+        
+        .video-thumbnail {
+            width: 240px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        @media (max-width: 600px) {
+            .video-thumbnail {
+                width: 100%;
+            }
+        }
+        
+        .video-thumbnail img {
+            width: 100%;
+            border-radius: 4px;
+        }
+        
+        .video-thumbnail-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .video-thumbnail-overlay:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .video-thumbnail-play {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .video-details {
+            flex: 1;
+        }
+        
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .video-metadata {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .video-metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.875rem;
+        }
+        
+        .video-description {
+            font-size: 0.9rem;
+            max-height: 120px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color, #212529);
+        }
+        
+        .quality-selector {
+            margin-bottom: 1rem;
+        }
+        
+        .quality-selector-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .quality-selector select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .download-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .download-button.primary {
+            background-color: var(--primary-color, #007bff);
+            color: white;
+            flex: 2;
+        }
+        
+        .download-button.primary:hover {
+            background-color: var(--primary-dark-color, #0069d9);
+        }
+        
+        .download-button.secondary {
+            background-color: var(--secondary-color, #6c757d);
+            color: white;
+            flex: 1;
+        }
+        
+        .download-button.secondary:hover {
+            background-color: var(--secondary-dark-color, #5a6268);
+        }
+        
+        .format-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color, #ddd);
+            margin-bottom: 1rem;
+        }
+        
+        .format-tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .format-tab.active {
+            border-bottom-color: var(--primary-color, #007bff);
+            color: var(--primary-color, #007bff);
+            font-weight: 500;
+        }
+        
+        .format-content {
+            display: none;
+        }
+        
+        .format-content.active {
+            display: block;
+        }
+        
+        .quality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+        
+        .quality-card {
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .quality-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quality-card-header {
+            padding: 0.75rem;
+            background-color: var(--hover-bg-color, #e9ecef);
+            border-bottom: 1px solid var(--border-color, #ddd);
+            font-weight: 500;
+        }
+        
+        .quality-card-body {
+            padding: 0.75rem;
+        }
+        
+        .quality-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quality-info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+        }
+        
+        .quality-info-label {
+            color: var(--muted-text-color, #6c757d);
+        }
+        
+        .quality-info-value {
+            font-weight: 500;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--hover-bg-color, #e9ecef);
+        }
+        
+        .disclaimer {
+            background-color: var(--warning-bg-color, #fff3cd);
+            color: var(--warning-color, #856404);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .disclaimer strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div class="tool-input">
+        <h3>YouTube Video Downloader</h3>
+        
+        <div class="disclaimer">
+            <strong>Important Notice:</strong>
+            This tool is for educational purposes only. Please ensure you have the right to download any content before using this tool. 
+            Many videos are protected by copyright, and downloading them without permission may violate YouTube's Terms of Service and copyright laws.
+            Always respect intellectual property rights and only download videos that are explicitly allowed to be downloaded by their creators.
+        </div>
+        
+        <div class="yt-downloader-container">
+            <div class="input-section">
+                <div class="url-input-group">
+                    <input type="text" id="video-url" placeholder="Enter YouTube video URL" />
+                    <button id="fetch-btn" class="primary-btn">Fetch Video</button>
+                </div>
+                
+                <div class="examples">
+                    Examples: <code>https://www.youtube.com/watch?v=dQw4w9WgXcQ</code> or <code>https://youtu.be/dQw4w9WgXcQ</code>
+                </div>
+                
+                <div id="status-message" class="status-message info">
+                    <i class="fas fa-info-circle"></i> Enter a YouTube video URL to begin
+                </div>
+            </div>
+            
+            <div id="video-result" class="video-result">
+                <div class="video-result-header">
+                    <h4>Video Information</h4>
+                    <button id="back-btn" class="secondary-btn">
+                        <i class="fas fa-arrow-left"></i> Try Another Video
+                    </button>
+                </div>
+                
+                <div class="video-info">
+                    <div class="video-thumbnail">
+                        <img id="video-img" src="" alt="Video Thumbnail" />
+                        <div class="video-thumbnail-overlay" id="play-video">
+                            <i class="fas fa-play-circle video-thumbnail-play"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="video-details">
+                        <div id="video-title" class="video-title"></div>
+                        
+                        <div class="video-metadata">
+                            <div class="video-metadata-item">
+                                <i class="fas fa-user"></i>
+                                <span id="video-channel"></span>
+                            </div>
+                            <div class="video-metadata-item">
+                                <i class="fas fa-calendar"></i>
+                                <span id="video-date"></span>
+                            </div>
+                            <div class="video-metadata-item">
+                                <i class="fas fa-eye"></i>
+                                <span id="video-views"></span>
+                            </div>
+                            <div class="video-metadata-item">
+                                <i class="fas fa-clock"></i>
+                                <span id="video-duration"></span>
+                            </div>
+                        </div>
+                        
+                        <div id="video-description" class="video-description"></div>
+                        
+                        <div class="format-tabs">
+                            <div class="format-tab active" data-format="video">Video (MP4)</div>
+                            <div class="format-tab" data-format="audio">Audio (MP3)</div>
+                        </div>
+                        
+                        <div id="video-format" class="format-content active">
+                            <div class="quality-selector">
+                                <label for="video-quality" class="quality-selector-label">Select Video Quality:</label>
+                                <select id="video-quality">
+                                    <option value="highest">Highest Quality (1080p)</option>
+                                    <option value="720p">HD (720p)</option>
+                                    <option value="480p">SD (480p)</option>
+                                    <option value="360p">Low (360p)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="download-buttons">
+                                <button id="download-video-btn" class="download-button primary">
+                                    <i class="fas fa-download"></i> Download MP4
+                                </button>
+                                <button id="copy-video-url-btn" class="download-button secondary">
+                                    <i class="fas fa-copy"></i> Copy URL
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="audio-format" class="format-content">
+                            <div class="quality-selector">
+                                <label for="audio-quality" class="quality-selector-label">Select Audio Quality:</label>
+                                <select id="audio-quality">
+                                    <option value="highest">Highest Quality (320 kbps)</option>
+                                    <option value="medium">Medium Quality (256 kbps)</option>
+                                    <option value="low">Low Quality (128 kbps)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="download-buttons">
+                                <button id="download-audio-btn" class="download-button primary">
+                                    <i class="fas fa-download"></i> Download MP3
+                                </button>
+                                <button id="copy-audio-url-btn" class="download-button secondary">
+                                    <i class="fas fa-copy"></i> Copy URL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Video preview modal -->
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close">&times;</span>
+            <div id="video-player-container">
+                <iframe id="video-frame" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function inityoutubevideodownloader() {
+    // Elements
+    const videoUrl = document.getElementById('video-url');
+    const fetchBtn = document.getElementById('fetch-btn');
+    const statusMessage = document.getElementById('status-message');
+    const videoResult = document.getElementById('video-result');
+    const backBtn = document.getElementById('back-btn');
+    const videoImg = document.getElementById('video-img');
+    const videoTitle = document.getElementById('video-title');
+    const videoChannel = document.getElementById('video-channel');
+    const videoDate = document.getElementById('video-date');
+    const videoViews = document.getElementById('video-views');
+    const videoDuration = document.getElementById('video-duration');
+    const videoDescription = document.getElementById('video-description');
+    const playVideo = document.getElementById('play-video');
+    const videoModal = document.getElementById('video-modal');
+    const videoFrame = document.getElementById('video-frame');
+    const modalClose = document.getElementById('modal-close');
+    const formatTabs = document.querySelectorAll('.format-tab');
+    const formatContents = document.querySelectorAll('.format-content');
+    const videoQuality = document.getElementById('video-quality');
+    const audioQuality = document.getElementById('audio-quality');
+    const downloadVideoBtn = document.getElementById('download-video-btn');
+    const downloadAudioBtn = document.getElementById('download-audio-btn');
+    const copyVideoUrlBtn = document.getElementById('copy-video-url-btn');
+    const copyAudioUrlBtn = document.getElementById('copy-audio-url-btn');
+    
+    // Current video ID
+    let currentVideoId = '';
+    
+    // Event listeners
+    fetchBtn.addEventListener('click', fetchVideo);
+    backBtn.addEventListener('click', resetTool);
+    videoUrl.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            fetchVideo();
+        }
+    });
+    
+    playVideo.addEventListener('click', openVideoPreview);
+    modalClose.addEventListener('click', closeVideoPreview);
+    videoModal.addEventListener('click', function(e) {
+        if (e.target === videoModal) {
+            closeVideoPreview();
+        }
+    });
+    
+    // Format tabs event listeners
+    formatTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            formatTabs.forEach(t => t.classList.remove('active'));
+            formatContents.forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            const format = tab.getAttribute('data-format');
+            document.getElementById(`${format}-format`).classList.add('active');
+        });
+    });
+    
+    // Download buttons
+    downloadVideoBtn.addEventListener('click', () => {
+        downloadVideo(videoQuality.value);
+    });
+    
+    downloadAudioBtn.addEventListener('click', () => {
+        downloadAudio(audioQuality.value);
+    });
+    
+    copyVideoUrlBtn.addEventListener('click', () => {
+        copyToClipboard('video', videoQuality.value);
+    });
+    
+    copyAudioUrlBtn.addEventListener('click', () => {
+        copyToClipboard('audio', audioQuality.value);
+    });
+    
+    // Function to extract video ID from YouTube URL
+    function extractVideoId(url) {
+        // Try to extract from URL
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[7].length === 11) ? match[7] : null;
+    }
+    
+    // Function to fetch video information
+    function fetchVideo() {
+        const url = videoUrl.value.trim();
+        
+        if (!url) {
+            showError('Please enter a YouTube video URL');
+            return;
+        }
+        
+        const videoId = extractVideoId(url);
+        
+        if (!videoId) {
+            showError('Invalid YouTube video URL');
+            return;
+        }
+        
+        currentVideoId = videoId;
+        showInfo('Fetching video information...');
+        
+        // In a real implementation, this would make an API call to get video details
+        // For this demo, we'll simulate it with hardcoded data
+        
+        // Simulate loading time
+        setTimeout(() => {
+            // Set video information (in a real app, this would come from the API)
+            videoImg.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+            videoTitle.textContent = 'Sample YouTube Video Title - This is a demo video title for the YouTube video downloader tool';
+            videoChannel.textContent = 'Channel Name';
+            videoDate.textContent = 'Jan 1, 2023';
+            videoViews.textContent = '1,234,567 views';
+            videoDuration.textContent = '10:30';
+            videoDescription.textContent = 'This is a sample description for the video. In a real application, this would contain the actual video description from YouTube. This is just placeholder text to demonstrate how the description would appear in the interface.';
+            
+            // Show video result
+            statusMessage.style.display = 'none';
+            videoResult.style.display = 'block';
+            
+            // Show success message briefly
+            showSuccess('Video information fetched successfully!');
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 3000);
+        }, 1500);
+    }
+    
+    // Function to open video preview
+    function openVideoPreview() {
+        if (!currentVideoId) return;
+        
+        videoFrame.src = `https://www.youtube.com/embed/${currentVideoId}`;
+        videoModal.style.display = 'flex';
+    }
+    
+    // Function to close video preview
+    function closeVideoPreview() {
+        videoModal.style.display = 'none';
+        videoFrame.src = '';
+    }
+    
+    // Function to download video
+    function downloadVideo(quality) {
+        if (!currentVideoId) return;
+        
+        // In a real application, this would generate a download link for the video
+        // For this demo, we'll just show a message
+        
+        showWarning('This is a demo. In a real implementation, this would download the video in ' + quality + ' quality.');
+        
+        // Simulate download preparation
+        showInfo('Preparing download...');
+        
+        setTimeout(() => {
+            const demoDownloadUrl = `https://example.com/download/${currentVideoId}/${quality}/video.mp4`;
+            showSuccess('Your download is ready!');
+            
+            // In a real application, this would trigger the download
+            // For demonstration, we'll just open a new tab with the URL
+            window.open('https://www.youtube.com/watch?v=' + currentVideoId, '_blank');
+        }, 2000);
+    }
+    
+    // Function to download audio
+    function downloadAudio(quality) {
+        if (!currentVideoId) return;
+        
+        // Similar to video download, this is just a demo
+        showWarning('This is a demo. In a real implementation, this would download the audio in ' + quality + ' quality.');
+        
+        // Simulate download preparation
+        showInfo('Preparing audio download...');
+        
+        setTimeout(() => {
+            const demoDownloadUrl = `https://example.com/download/${currentVideoId}/${quality}/audio.mp3`;
+            showSuccess('Your audio download is ready!');
+            
+            // For demonstration
+            window.open('https://www.youtube.com/watch?v=' + currentVideoId, '_blank');
+        }, 2000);
+    }
+    
+    // Function to copy URL to clipboard
+    function copyToClipboard(type, quality) {
+        if (!currentVideoId) return;
+        
+        const demoUrl = type === 'video' 
+            ? `https://example.com/download/${currentVideoId}/${quality}/video.mp4`
+            : `https://example.com/download/${currentVideoId}/${quality}/audio.mp3`;
+        
+        // Create a temporary input element
+        const tempInput = document.createElement('input');
+        tempInput.value = demoUrl;
+        document.body.appendChild(tempInput);
+        
+        // Select and copy the text
+        tempInput.select();
+        document.execCommand('copy');
+        
+        // Remove the temporary element
+        document.body.removeChild(tempInput);
+        
+        // Show success message
+        showSuccess(`${type === 'video' ? 'Video' : 'Audio'} URL copied to clipboard!`);
+    }
+    
+    // Function to show error message
+    function showError(message) {
+        statusMessage.className = 'status-message error';
+        statusMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+        statusMessage.style.display = 'block';
+    }
+    
+    // Function to show info message
+    function showInfo(message) {
+        statusMessage.className = 'status-message info';
+        statusMessage.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        statusMessage.style.display = 'block';
+    }
+    
+    // Function to show success message
+    function showSuccess(message) {
+        statusMessage.className = 'status-message success';
+        statusMessage.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        statusMessage.style.display = 'block';
+    }
+    
+    // Function to show warning message
+    function showWarning(message) {
+        statusMessage.className = 'status-message warning';
+        statusMessage.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+        statusMessage.style.display = 'block';
+    }
+    
+    // Function to reset the tool
+    function resetTool() {
+        statusMessage.className = 'status-message info';
+        statusMessage.innerHTML = '<i class="fas fa-info-circle"></i> Enter a YouTube video URL to begin';
+        statusMessage.style.display = 'block';
+        
+        videoResult.style.display = 'none';
+        videoUrl.value = '';
+        videoUrl.focus();
+        currentVideoId = '';
+    }
+    
+    // Initialize with info message
+    statusMessage.style.display = 'block';
+}
+</script> 

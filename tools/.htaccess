@@ -1,0 +1,4 @@
+Options +Indexes
+DirectoryIndex disabled
+IndexOptions FancyIndexing HTMLTable VersionSort NameWidth=* DescriptionWidth=*
+IndexIgnore .htaccess .htpasswd .git 

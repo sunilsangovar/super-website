@@ -1,0 +1,247 @@
+<!-- Add meta tag for the tool icon -->
+<meta name="tool-icon" content="fas fa-image">
+<div class="tool-content" data-tool-icon="fas fa-image">
+    <div class="tool-input">
+        <h3>Image Upload</h3>
+        <div class="image-upload-area">
+            <input type="file" id="image-input" accept="image/*" class="hidden-input">
+            <div id="drop-area" class="drop-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag & drop an image here or</p>
+                <button id="browse-btn" class="secondary-btn">Browse Files</button>
+            </div>
+        </div>
+        
+        <div id="image-preview-container" class="image-preview-container" style="display: none;">
+            <h3>Original Image</h3>
+            <div class="image-preview">
+                <img id="image-preview" src="" alt="Image preview">
+                <div class="image-details">
+                    <span id="original-dimensions">0 x 0 px</span>
+                    <span id="original-size">0 KB</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="resize-options" class="resize-options" style="display: none;">
+            <h3>Resize Options</h3>
+            <div class="input-group">
+                <label for="width-input">Width:</label>
+                <input type="number" id="width-input" min="1" placeholder="Auto">
+                <span>px</span>
+            </div>
+            <div class="input-group">
+                <label for="height-input">Height:</label>
+                <input type="number" id="height-input" min="1" placeholder="Auto">
+                <span>px</span>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="maintain-aspect-ratio" checked>
+                <label for="maintain-aspect-ratio">Maintain Aspect Ratio</label>
+            </div>
+            <div class="input-group">
+                <label for="quality-input">Quality:</label>
+                <input type="range" id="quality-input" min="10" max="100" value="90">
+                <span id="quality-value">90%</span>
+            </div>
+            <div class="input-group">
+                <label for="format-select">Format:</label>
+                <select id="format-select">
+                    <option value="jpeg">JPEG</option>
+                    <option value="png">PNG</option>
+                    <option value="webp">WebP</option>
+                </select>
+            </div>
+            <button id="resize-btn" class="primary-btn">Resize Image</button>
+        </div>
+    </div>
+    
+    <div id="tool-output" class="tool-output" style="display: none;">
+        <h3>Resized Image</h3>
+        <div class="image-preview">
+            <img id="resized-preview" src="" alt="Resized image">
+            <div class="image-details">
+                <span id="resized-dimensions">0 x 0 px</span>
+                <span id="resized-size">0 KB</span>
+            </div>
+        </div>
+        <div class="download-area">
+            <button id="download-btn" class="primary-btn">
+                <i class="fas fa-download"></i> Download
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function initimageresizer() {
+    const imageInput = document.getElementById('image-input');
+    const dropArea = document.getElementById('drop-area');
+    const browseBtn = document.getElementById('browse-btn');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const originalDimensions = document.getElementById('original-dimensions');
+    const originalSize = document.getElementById('original-size');
+    const resizeOptions = document.getElementById('resize-options');
+    const widthInput = document.getElementById('width-input');
+    const heightInput = document.getElementById('height-input');
+    const maintainAspectRatio = document.getElementById('maintain-aspect-ratio');
+    const qualityInput = document.getElementById('quality-input');
+    const qualityValue = document.getElementById('quality-value');
+    const formatSelect = document.getElementById('format-select');
+    const resizeBtn = document.getElementById('resize-btn');
+    const toolOutput = document.getElementById('tool-output');
+    const resizedPreview = document.getElementById('resized-preview');
+    const resizedDimensions = document.getElementById('resized-dimensions');
+    const resizedSize = document.getElementById('resized-size');
+    const downloadBtn = document.getElementById('download-btn');
+    
+    let originalImage = null;
+    
+    // Event listeners
+    browseBtn.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', handleImageSelect);
+    
+    // Drag and drop events
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('active');
+    });
+    
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('active');
+    });
+    
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('active');
+        
+        if (e.dataTransfer.files.length) {
+            imageInput.files = e.dataTransfer.files;
+            handleImageSelect();
+        }
+    });
+    
+    // Quality slider
+    qualityInput.addEventListener('input', () => {
+        qualityValue.textContent = `${qualityInput.value}%`;
+    });
+    
+    // Maintain aspect ratio
+    let aspectRatio = 0;
+    widthInput.addEventListener('input', () => {
+        if (maintainAspectRatio.checked && aspectRatio > 0) {
+            const newWidth = parseInt(widthInput.value) || 0;
+            if (newWidth > 0) {
+                heightInput.value = Math.round(newWidth / aspectRatio);
+            }
+        }
+    });
+    
+    heightInput.addEventListener('input', () => {
+        if (maintainAspectRatio.checked && aspectRatio > 0) {
+            const newHeight = parseInt(heightInput.value) || 0;
+            if (newHeight > 0) {
+                widthInput.value = Math.round(newHeight * aspectRatio);
+            }
+        }
+    });
+    
+    // Resize image
+    resizeBtn.addEventListener('click', resizeImage);
+    
+    // Download button
+    downloadBtn.addEventListener('click', downloadImage);
+    
+    // Function to handle image selection
+    function handleImageSelect() {
+        const file = imageInput.files[0];
+        
+        if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Display original image
+                    originalImage = img;
+                    imagePreview.src = e.target.result;
+                    originalDimensions.textContent = `${img.width} x ${img.height} px`;
+                    originalSize.textContent = formatFileSize(file.size);
+                    
+                    // Set initial resize values
+                    aspectRatio = img.width / img.height;
+                    widthInput.value = img.width;
+                    heightInput.value = img.height;
+                    widthInput.setAttribute('max', img.width * 2);
+                    heightInput.setAttribute('max', img.height * 2);
+                    
+                    // Show preview and options
+                    imagePreviewContainer.style.display = 'block';
+                    resizeOptions.style.display = 'block';
+                    toolOutput.style.display = 'none';
+                };
+                img.src = e.target.result;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    // Function to resize image
+    function resizeImage() {
+        if (!originalImage) return;
+        
+        const width = parseInt(widthInput.value) || originalImage.width;
+        const height = parseInt(heightInput.value) || originalImage.height;
+        const quality = parseInt(qualityInput.value) / 100;
+        const format = formatSelect.value;
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(originalImage, 0, 0, width, height);
+        
+        let mimeType;
+        switch(format) {
+            case 'png': mimeType = 'image/png'; break;
+            case 'webp': mimeType = 'image/webp'; break;
+            default: mimeType = 'image/jpeg';
+        }
+        
+        const dataUrl = canvas.toDataURL(mimeType, quality);
+        
+        // Display resized image
+        resizedPreview.src = dataUrl;
+        resizedDimensions.textContent = `${width} x ${height} px`;
+        
+        // Calculate file size (approximate)
+        const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
+        resizedSize.textContent = formatFileSize(sizeInBytes);
+        
+        toolOutput.style.display = 'block';
+    }
+    
+    // Function to download image
+    function downloadImage() {
+        if (!resizedPreview.src) return;
+        
+        const format = formatSelect.value;
+        const link = document.createElement('a');
+        link.download = `resized-image.${format}`;
+        link.href = resizedPreview.src;
+        link.click();
+    }
+    
+    // Function to format file size
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+}
+</script> 

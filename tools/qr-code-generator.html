@@ -1,0 +1,390 @@
+<!-- Add meta tag for the tool icon -->
+<meta name="tool-icon" content="fas fa-qrcode">
+<div class="tool-content" data-tool-icon="fas fa-qrcode">
+    <style>
+        /* QR Code Generator Specific Styles */
+        .qr-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .qr-option {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .qr-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        
+        #qr-code-container {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        
+        .color-picker-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .color-picker-group label {
+            width: 150px;
+            margin-right: 1rem;
+        }
+        
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin-right: 0.5rem;
+        }
+        
+        .download-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .download-options button {
+            flex: 1;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+
+    <div class="tool-input">
+        <h3>QR Code Content</h3>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="text">Text / URL</div>
+            <div class="tab" data-tab="wifi">Wi-Fi</div>
+            <div class="tab" data-tab="contact">Contact (vCard)</div>
+        </div>
+        
+        <!-- Text/URL Tab -->
+        <div class="tab-content active" id="text-tab">
+            <div class="input-group">
+                <label for="qr-text">Enter Text or URL:</label>
+                <textarea id="qr-text" placeholder="Enter text or paste a URL..." rows="4"></textarea>
+            </div>
+        </div>
+        
+        <!-- Wi-Fi Tab -->
+        <div class="tab-content" id="wifi-tab">
+            <div class="input-group">
+                <label for="wifi-ssid">Network Name (SSID):</label>
+                <input type="text" id="wifi-ssid" placeholder="Enter network name">
+            </div>
+            <div class="input-group">
+                <label for="wifi-password">Password:</label>
+                <input type="password" id="wifi-password" placeholder="Enter network password">
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="wifi-hidden">
+                <label for="wifi-hidden">Hidden Network</label>
+            </div>
+            <div class="input-group">
+                <label for="wifi-encryption">Encryption:</label>
+                <select id="wifi-encryption">
+                    <option value="WPA">WPA/WPA2</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">None</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Contact Tab -->
+        <div class="tab-content" id="contact-tab">
+            <div class="input-group">
+                <label for="contact-name">Name:</label>
+                <input type="text" id="contact-name" placeholder="John Doe">
+            </div>
+            <div class="input-group">
+                <label for="contact-phone">Phone:</label>
+                <input type="text" id="contact-phone" placeholder="+1 123 456 7890">
+            </div>
+            <div class="input-group">
+                <label for="contact-email">Email:</label>
+                <input type="email" id="contact-email" placeholder="johndoe@example.com">
+            </div>
+            <div class="input-group">
+                <label for="contact-url">Website:</label>
+                <input type="url" id="contact-url" placeholder="https://example.com">
+            </div>
+            <div class="input-group">
+                <label for="contact-address">Address:</label>
+                <textarea id="contact-address" placeholder="123 Main St, City, Country" rows="2"></textarea>
+            </div>
+        </div>
+        
+        <h3>QR Code Options</h3>
+        <div class="qr-options">
+            <div class="qr-option">
+                <div class="input-group">
+                    <label for="qr-size">QR Code Size:</label>
+                    <select id="qr-size">
+                        <option value="150">Small (150x150)</option>
+                        <option value="200" selected>Medium (200x200)</option>
+                        <option value="300">Large (300x300)</option>
+                        <option value="400">Extra Large (400x400)</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="qr-error-correction">Error Correction:</label>
+                    <select id="qr-error-correction">
+                        <option value="L">Low (7%)</option>
+                        <option value="M" selected>Medium (15%)</option>
+                        <option value="Q">High (25%)</option>
+                        <option value="H">Very High (30%)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="qr-option">
+                <div class="color-picker-group">
+                    <label for="qr-color">Foreground Color:</label>
+                    <div class="color-preview" id="fg-color-preview" style="background-color: #000000;"></div>
+                    <input type="color" id="qr-color" value="#000000">
+                </div>
+                
+                <div class="color-picker-group">
+                    <label for="qr-bg-color">Background Color:</label>
+                    <div class="color-preview" id="bg-color-preview" style="background-color: #FFFFFF;"></div>
+                    <input type="color" id="qr-bg-color" value="#FFFFFF">
+                </div>
+            </div>
+        </div>
+        
+        <button id="generate-qr-btn" class="primary-btn">Generate QR Code</button>
+    </div>
+    
+    <div class="tool-output">
+        <h3>Your QR Code</h3>
+        <div id="qr-output" class="text-center">
+            <p>Your QR code will appear here after generation.</p>
+            <div id="qr-code-container" style="display: none;">
+                <div id="qr-code"></div>
+            </div>
+            
+            <div class="download-options" style="display: none;" id="download-options">
+                <button id="download-png-btn" class="secondary-btn">
+                    <i class="fas fa-download"></i> PNG
+                </button>
+                <button id="download-svg-btn" class="secondary-btn">
+                    <i class="fas fa-download"></i> SVG
+                </button>
+                <button id="download-jpeg-btn" class="secondary-btn">
+                    <i class="fas fa-download"></i> JPEG
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+function initqrcodegenerator() {
+    // Elements
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const generateQrBtn = document.getElementById('generate-qr-btn');
+    const qrText = document.getElementById('qr-text');
+    const qrSize = document.getElementById('qr-size');
+    const qrErrorCorrection = document.getElementById('qr-error-correction');
+    const qrColor = document.getElementById('qr-color');
+    const qrBgColor = document.getElementById('qr-bg-color');
+    const fgColorPreview = document.getElementById('fg-color-preview');
+    const bgColorPreview = document.getElementById('bg-color-preview');
+    const qrCodeContainer = document.getElementById('qr-code-container');
+    const downloadOptions = document.getElementById('download-options');
+    const downloadPngBtn = document.getElementById('download-png-btn');
+    const downloadSvgBtn = document.getElementById('download-svg-btn');
+    const downloadJpegBtn = document.getElementById('download-jpeg-btn');
+    
+    // Wi-Fi tab elements
+    const wifiSsid = document.getElementById('wifi-ssid');
+    const wifiPassword = document.getElementById('wifi-password');
+    const wifiHidden = document.getElementById('wifi-hidden');
+    const wifiEncryption = document.getElementById('wifi-encryption');
+    
+    // Contact tab elements
+    const contactName = document.getElementById('contact-name');
+    const contactPhone = document.getElementById('contact-phone');
+    const contactEmail = document.getElementById('contact-email');
+    const contactUrl = document.getElementById('contact-url');
+    const contactAddress = document.getElementById('contact-address');
+    
+    let qrCode = null;
+    let activeTab = 'text';
+    
+    // Tab switching
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            tab.classList.add('active');
+            activeTab = tab.dataset.tab;
+            document.getElementById(`${activeTab}-tab`).classList.add('active');
+        });
+    });
+    
+    // Color pickers preview
+    qrColor.addEventListener('input', () => {
+        fgColorPreview.style.backgroundColor = qrColor.value;
+    });
+    
+    qrBgColor.addEventListener('input', () => {
+        bgColorPreview.style.backgroundColor = qrBgColor.value;
+    });
+    
+    // Generate QR Code
+    generateQrBtn.addEventListener('click', generateQRCode);
+    
+    function generateQRCode() {
+        // Get the content for QR code based on active tab
+        let content = '';
+        
+        switch(activeTab) {
+            case 'text':
+                content = qrText.value.trim();
+                break;
+            case 'wifi':
+                if (!wifiSsid.value.trim()) {
+                    alert('Network Name (SSID) is required.');
+                    return;
+                }
+                
+                const hidden = wifiHidden.checked ? 'H:true' : '';
+                const password = wifiPassword.value ? `P:${wifiPassword.value}` : '';
+                content = `WIFI:S:${wifiSsid.value};T:${wifiEncryption.value};${password};${hidden};;`;
+                break;
+            case 'contact':
+                if (!contactName.value.trim()) {
+                    alert('Name is required for contact information.');
+                    return;
+                }
+                
+                // Create vCard format
+                content = 'BEGIN:VCARD\nVERSION:3.0\n';
+                content += `N:${contactName.value}\n`;
+                content += `FN:${contactName.value}\n`;
+                
+                if (contactPhone.value) content += `TEL:${contactPhone.value}\n`;
+                if (contactEmail.value) content += `EMAIL:${contactEmail.value}\n`;
+                if (contactUrl.value) content += `URL:${contactUrl.value}\n`;
+                if (contactAddress.value) content += `ADR:;;${contactAddress.value}\n`;
+                
+                content += 'END:VCARD';
+                break;
+        }
+        
+        if (!content) {
+            alert('Please enter some content for the QR code.');
+            return;
+        }
+        
+        // Clear previous QR code
+        const qrCodeDiv = document.getElementById('qr-code');
+        qrCodeDiv.innerHTML = '';
+        
+        // Create new QR code
+        const size = parseInt(qrSize.value);
+        qrCode = new QRCode(qrCodeDiv, {
+            text: content,
+            width: size,
+            height: size,
+            colorDark: qrColor.value,
+            colorLight: qrBgColor.value,
+            correctLevel: QRCode.CorrectLevel[qrErrorCorrection.value]
+        });
+        
+        // Show QR code and download options
+        qrCodeContainer.style.display = 'block';
+        downloadOptions.style.display = 'flex';
+    }
+    
+    // Download functions
+    downloadPngBtn.addEventListener('click', () => {
+        downloadQRCode('png');
+    });
+    
+    downloadSvgBtn.addEventListener('click', () => {
+        alert('SVG download requires server-side processing. Use PNG for high-quality downloads.');
+    });
+    
+    downloadJpegBtn.addEventListener('click', () => {
+        downloadQRCode('jpeg');
+    });
+    
+    function downloadQRCode(format) {
+        if (!qrCode) return;
+        
+        const canvas = document.querySelector('#qr-code canvas');
+        if (!canvas) return;
+        
+        const link = document.createElement('a');
+        
+        if (format === 'png') {
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'qrcode.png';
+        } else if (format === 'jpeg') {
+            // Create a white background for JPEG (since it doesn't support transparency)
+            const newCanvas = document.createElement('canvas');
+            const ctx = newCanvas.getContext('2d');
+            newCanvas.width = canvas.width;
+            newCanvas.height = canvas.height;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+            ctx.drawImage(canvas, 0, 0);
+            link.href = newCanvas.toDataURL('image/jpeg', 0.9);
+            link.download = 'qrcode.jpg';
+        }
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+</script> 

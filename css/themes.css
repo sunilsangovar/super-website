@@ -1,0 +1,133 @@
+/* Theme Variables */
+:root {
+    /* Default Theme */
+    --default-primary: #4a6fa5;
+    --default-primary-rgb: 74, 111, 165;
+    --default-secondary: #47b39d;
+    --default-accent: #ffc857;
+    --default-bg: #f5f7fa;
+    --default-text: #333;
+    --default-border: #ddd;
+    --default-card-bg: #fff;
+    --default-header-bg: #1a3a5f;
+    --default-sidebar-bg: #2c5282;
+    --default-footer-bg: #1a3a5f;
+    --default-header-text: #ecf0f1;
+    --default-sidebar-text: #ecf0f1;
+    --default-footer-text: #ecf0f1;
+    
+    /* Dark Theme */
+    --dark-primary: #61a0af;
+    --dark-primary-rgb: 97, 160, 175;
+    --dark-secondary: #47b39d;
+    --dark-accent: #ffc857;
+    --dark-bg: #1a1a1a;
+    --dark-text: #f5f5f5;
+    --dark-border: #444;
+    --dark-card-bg: #2d2d2d;
+    --dark-header-bg: #1e272e;
+    --dark-sidebar-bg: #2d3436;
+    --dark-footer-bg: #1e272e;
+    --dark-header-text: #ecf0f1;
+    --dark-sidebar-text: #ecf0f1;
+    --dark-footer-text: #ecf0f1;
+    
+    /* Light Theme */
+    --light-primary: #4a6fa5;
+    --light-primary-rgb: 74, 111, 165;
+    --light-secondary: #47b39d;
+    --light-accent: #ff9642;
+    --light-bg: #fff;
+    --light-text: #333;
+    --light-border: #eee;
+    --light-card-bg: #f9f9f9;
+    --light-header-bg: #4a6fa5;
+    --light-sidebar-bg: #5d7ea6;
+    --light-footer-bg: #4a6fa5;
+    --light-header-text: #fff;
+    --light-sidebar-text: #fff;
+    --light-footer-text: #fff;
+}
+
+/* Theme Styles */
+
+/* Default Theme */
+.theme-default {
+    --primary-color: var(--default-primary);
+    --primary-color-rgb: var(--default-primary-rgb);
+    --secondary-color: var(--default-secondary);
+    --accent-color: var(--default-accent);
+    --bg-color: var(--default-bg);
+    --text-color: var(--default-text);
+    --border-color: var(--default-border);
+    --card-bg: var(--default-card-bg);
+    --header-bg: var(--default-header-bg);
+    --sidebar-bg: var(--default-sidebar-bg);
+    --footer-bg: var(--default-footer-bg);
+    --sidebar-text: var(--default-sidebar-text);
+    --header-text: var(--default-header-text);
+    --footer-text: var(--default-footer-text);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme */
+.theme-dark {
+    --primary-color: var(--dark-primary);
+    --primary-color-rgb: var(--dark-primary-rgb);
+    --secondary-color: var(--dark-secondary);
+    --accent-color: var(--dark-accent);
+    --bg-color: var(--dark-bg);
+    --text-color: var(--dark-text);
+    --border-color: var(--dark-border);
+    --card-bg: var(--dark-card-bg);
+    --header-bg: var(--dark-header-bg);
+    --sidebar-bg: var(--dark-sidebar-bg);
+    --footer-bg: var(--dark-footer-bg);
+    --sidebar-text: var(--dark-sidebar-text);
+    --header-text: var(--dark-header-text);
+    --footer-text: var(--dark-footer-text);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Light Theme */
+.theme-light {
+    --primary-color: var(--light-primary);
+    --primary-color-rgb: var(--light-primary-rgb);
+    --secondary-color: var(--light-secondary);
+    --accent-color: var(--light-accent);
+    --bg-color: var(--light-bg);
+    --text-color: var(--light-text);
+    --border-color: var(--light-border);
+    --card-bg: var(--light-card-bg);
+    --header-bg: var(--light-header-bg);
+    --sidebar-bg: var(--light-sidebar-bg);
+    --footer-bg: var(--light-footer-bg);
+    --sidebar-text: var(--light-sidebar-text);
+    --header-text: var(--light-header-text);
+    --footer-text: var(--light-footer-text);
+    --shadow-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark Mode Override */
+.dark-mode {
+    --bg-color: #121212;
+    --text-color: #f5f5f5;
+    --border-color: #333;
+    --card-bg: #1e1e1e;
+    --primary-color: var(--dark-primary);
+    --secondary-color: var(--dark-secondary);
+    --accent-color: var(--dark-accent);
+    --sidebar-bg: var(--dark-sidebar-bg);
+    --header-bg: var(--dark-header-bg);
+    --footer-bg: var(--dark-footer-bg);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Theme Transitions */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar, .header, .content, .tool-card, .breadcrumb, footer {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+} 

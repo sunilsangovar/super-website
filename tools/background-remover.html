@@ -1,0 +1,568 @@
+<!-- Add meta tag for the tool icon -->
+<meta name="tool-icon" content="fas fa-cut">
+<div class="tool-content" data-tool-icon="fas fa-cut">
+    <style>
+        /* Background Remover Specific Styles */
+        .bg-remover-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .info-box {
+            background-color: var(--info-bg-color, #d1ecf1);
+            border: 1px solid var(--info-color, #0c5460);
+            color: var(--info-color, #0c5460);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .info-box-title {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-box-title i {
+            margin-right: 0.5rem;
+        }
+        
+        .info-box ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .info-box li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .upload-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-area {
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 2px dashed var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary-color, #007bff);
+            background-color: var(--hover-bg-color, #e9ecef);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--muted-text-color, #6c757d);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .upload-hint {
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .or-divider::before, .or-divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid var(--border-color, #ddd);
+        }
+        
+        .or-divider span {
+            padding: 0 1rem;
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.9rem;
+        }
+        
+        .file-input-hidden {
+            display: none;
+        }
+        
+        .options-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-group {
+            margin-bottom: 1rem;
+        }
+        
+        .option-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .option-select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .slider-container {
+            width: 100%;
+        }
+        
+        .range-slider {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+        
+        .slider-value {
+            text-align: right;
+            font-size: 0.875rem;
+            color: var(--muted-text-color, #6c757d);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-group input {
+            margin-right: 0.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: var(--primary-color, #007bff);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--primary-dark-color, #0069d9);
+        }
+        
+        .primary-btn:disabled {
+            background-color: var(--muted-text-color, #6c757d);
+            cursor: not-allowed;
+        }
+        
+        .secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: transparent;
+            color: var(--primary-color, #007bff);
+            border: 1px solid var(--primary-color, #007bff);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .secondary-btn:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        
+        .examples-section {
+            margin-bottom: 2rem;
+        }
+        
+        .examples-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        
+        .example-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .example-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .example-before-after {
+            position: relative;
+            height: 150px;
+        }
+        
+        .example-before, .example-after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+        
+        .example-before {
+            opacity: 1;
+        }
+        
+        .example-after {
+            opacity: 0;
+        }
+        
+        .example-before-after:hover .example-before {
+            opacity: 0;
+        }
+        
+        .example-before-after:hover .example-after {
+            opacity: 1;
+        }
+        
+        .example-label {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            z-index: 1;
+        }
+        
+        .example-caption {
+            padding: 0.75rem;
+            background-color: white;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        
+        .preview-section {
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .preview-container {
+                flex-direction: row;
+            }
+        }
+        
+        .preview-card {
+            flex: 1;
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .preview-card-header {
+            padding: 1rem;
+            background-color: var(--card-header-bg, #f1f1f1);
+            border-bottom: 1px solid var(--border-color, #ddd);
+            font-weight: 500;
+        }
+        
+        .preview-image-container {
+            padding: 1rem;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .result-actions {
+            padding: 1rem;
+            background-color: var(--card-header-bg, #f1f1f1);
+            border-top: 1px solid var(--border-color, #ddd);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .download-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: var(--success-color, #28a745);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--success-dark-color, #218838);
+        }
+        
+        .download-btn.png {
+            background-color: var(--primary-color, #007bff);
+        }
+        
+        .download-btn.png:hover {
+            background-color: var(--primary-dark-color, #0069d9);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spinner 1s linear infinite;
+        }
+        
+        @keyframes spinner {
+            to {transform: rotate(360deg);}
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+    </style>
+
+    <div class="tool-input">
+        <h3>Background Remover</h3>
+        
+        <div class="bg-remover-container">
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle"></i> About Background Remover
+                </div>
+                <p>This tool helps you remove backgrounds from images with a single click.</p>
+                <ul>
+                    <li>Upload your image using the form below</li>
+                    <li>Our AI will automatically detect and remove the background</li>
+                    <li>Download your image with a transparent background</li>
+                </ul>
+                <p><strong>Note:</strong> This is a demonstration version. For a full implementation, server-side processing would be required.</p>
+            </div>
+            
+            <!-- Upload Section -->
+            <form action="https://httpbin.org/post" method="post" enctype="multipart/form-data" target="_blank">
+                <div class="upload-section">
+                    <label for="image-upload" class="upload-area">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div class="upload-text">Upload your image</div>
+                        <div class="upload-hint">Supported formats: JPG, PNG (Max 10MB)</div>
+                        <div class="or-divider">
+                            <span>OR</span>
+                        </div>
+                        <button type="button" class="secondary-btn" onclick="document.getElementById('image-upload').click()">
+                            <i class="fas fa-folder-open"></i> Choose File
+                        </button>
+                        <input type="file" id="image-upload" name="image" class="file-input-hidden" accept="image/jpeg, image/png">
+                    </label>
+                </div>
+                
+                <!-- Options Section -->
+                <div class="options-section">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
+                        <div class="option-group">
+                            <label for="detection-mode" class="option-label">Detection Mode:</label>
+                            <select id="detection-mode" name="detection-mode" class="option-select">
+                                <option value="auto">Auto Detect (Recommended)</option>
+                                <option value="portrait">Portrait/People</option>
+                                <option value="product">Product/Object</option>
+                                <option value="animal">Animal</option>
+                            </select>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label for="background-type" class="option-label">Output Background:</label>
+                            <select id="background-type" name="background-type" class="option-select">
+                                <option value="transparent">Transparent</option>
+                                <option value="white">White</option>
+                                <option value="color">Custom Color</option>
+                                <option value="blur">Blur Original</option>
+                            </select>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label for="edge-refinement" class="option-label">Edge Refinement:</label>
+                            <div class="slider-container">
+                                <input type="range" id="edge-refinement" name="edge-refinement" class="range-slider" min="0" max="100" value="50">
+                                <div class="slider-value">50%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="enhance-result" name="enhance-result" checked>
+                        <label for="enhance-result">Enhance image quality after processing</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="preserve-shadows" name="preserve-shadows">
+                        <label for="preserve-shadows">Preserve natural shadows</label>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="submit" class="primary-btn">
+                        <i class="fas fa-magic"></i> Remove Background
+                    </button>
+                    <button type="reset" class="secondary-btn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Examples Section -->
+            <div class="examples-section">
+                <h4 class="examples-title">Examples</h4>
+                <div class="examples-grid">
+                    <div class="example-item">
+                        <div class="example-before-after">
+                            <span class="example-label">Hover to see result</span>
+                            <img src="https://via.placeholder.com/300x300/f0f0f0/888888?text=Portrait+With+Background" alt="Before: Portrait with background" class="example-before">
+                            <img src="https://via.placeholder.com/300x300/ffffff/888888?text=Portrait+No+Background" alt="After: Portrait with transparent background" class="example-after">
+                        </div>
+                        <div class="example-caption">Portrait</div>
+                    </div>
+                    
+                    <div class="example-item">
+                        <div class="example-before-after">
+                            <span class="example-label">Hover to see result</span>
+                            <img src="https://via.placeholder.com/300x300/f0f0f0/888888?text=Product+With+Background" alt="Before: Product with background" class="example-before">
+                            <img src="https://via.placeholder.com/300x300/ffffff/888888?text=Product+No+Background" alt="After: Product with transparent background" class="example-after">
+                        </div>
+                        <div class="example-caption">Product</div>
+                    </div>
+                    
+                    <div class="example-item">
+                        <div class="example-before-after">
+                            <span class="example-label">Hover to see result</span>
+                            <img src="https://via.placeholder.com/300x300/f0f0f0/888888?text=Pet+With+Background" alt="Before: Pet with background" class="example-before">
+                            <img src="https://via.placeholder.com/300x300/ffffff/888888?text=Pet+No+Background" alt="After: Pet with transparent background" class="example-after">
+                        </div>
+                        <div class="example-caption">Pet</div>
+                    </div>
+                    
+                    <div class="example-item">
+                        <div class="example-before-after">
+                            <span class="example-label">Hover to see result</span>
+                            <img src="https://via.placeholder.com/300x300/f0f0f0/888888?text=Object+With+Background" alt="Before: Object with background" class="example-before">
+                            <img src="https://via.placeholder.com/300x300/ffffff/888888?text=Object+No+Background" alt="After: Object with transparent background" class="example-after">
+                        </div>
+                        <div class="example-caption">Object</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview Section (Would be shown after processing) -->
+            <div class="preview-section" id="preview-section">
+                <div class="preview-container">
+                    <div class="preview-card">
+                        <div class="preview-card-header">Original Image</div>
+                        <div class="preview-image-container">
+                            <img src="https://via.placeholder.com/500x500/f0f0f0/888888?text=Original+Image" alt="Original image" class="preview-image">
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card">
+                        <div class="preview-card-header">Background Removed</div>
+                        <div class="preview-image-container">
+                            <img src="https://via.placeholder.com/500x500/ffffff/888888?text=Transparent+Background" alt="Image with background removed" class="preview-image">
+                        </div>
+                        <div class="result-actions">
+                            <div class="download-options">
+                                <a href="#" class="download-btn png">
+                                    <i class="fas fa-download"></i> PNG
+                                </a>
+                                <a href="#" class="download-btn">
+                                    <i class="fas fa-download"></i> JPG
+                                </a>
+                            </div>
+                            <button type="button" class="secondary-btn">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay (Would be shown during processing) -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Removing background...</div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,522 @@
+<!-- Add meta tag for the tool icon -->
+<meta name="tool-icon" content="fab fa-youtube">
+<div class="tool-content" data-tool-icon="fab fa-youtube">
+    <style>
+        /* YouTube Thumbnail Downloader Specific Styles */
+        .thumbnail-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .input-section {
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .url-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .url-input-group input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .url-input-group input:focus {
+            border-color: var(--primary-color, #007bff);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .examples {
+            font-size: 0.875rem;
+            color: var(--muted-text-color, #6c757d);
+            margin-bottom: 1rem;
+        }
+        
+        .examples code {
+            background-color: var(--hover-bg-color, #e9ecef);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .status-message {
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .status-message.error {
+            background-color: var(--error-bg-color, #f8d7da);
+            color: var(--error-color, #dc3545);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .status-message.success {
+            background-color: var(--success-bg-color, #d4edda);
+            color: var(--success-color, #28a745);
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        .status-message.info {
+            background-color: var(--info-bg-color, #d1ecf1);
+            color: var(--info-color, #17a2b8);
+            border: 1px solid rgba(23, 162, 184, 0.2);
+        }
+        
+        .thumbnail-preview {
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .thumbnail-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .thumbnail-preview-header h4 {
+            margin: 0;
+        }
+        
+        .video-info {
+            display: flex;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+        
+        .video-info-image {
+            width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .video-info-image img {
+            width: 100%;
+            border-radius: 4px;
+        }
+        
+        .video-info-details {
+            flex: 1;
+        }
+        
+        .video-info-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .video-info-channel {
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .video-info-date {
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.875rem;
+        }
+        
+        .thumbnails-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        @media (max-width: 600px) {
+            .thumbnails-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .thumbnail-item {
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .thumbnail-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .thumbnail-image {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background-color: #000;
+        }
+        
+        .thumbnail-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .thumbnail-details {
+            padding: 1rem;
+            background-color: var(--card-bg-color, #f8f9fa);
+        }
+        
+        .thumbnail-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .thumbnail-resolution {
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .thumbnail-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .thumbnail-button {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .download-btn {
+            background-color: var(--primary-color, #007bff);
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--primary-dark-color, #0069d9);
+        }
+        
+        .preview-btn {
+            background-color: var(--secondary-color, #6c757d);
+            color: white;
+        }
+        
+        .preview-btn:hover {
+            background-color: var(--secondary-dark-color, #5a6268);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--hover-bg-color, #e9ecef);
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: 70vh;
+        }
+        
+        .modal-details {
+            margin-top: 1rem;
+        }
+    </style>
+
+    <div class="tool-input">
+        <h3>YouTube Thumbnail Downloader</h3>
+        
+        <div class="thumbnail-container">
+            <div class="input-section">
+                <div class="url-input-group">
+                    <input type="text" id="youtube-url" placeholder="Enter YouTube video URL or Video ID" />
+                    <button id="fetch-btn" class="primary-btn">Fetch Thumbnails</button>
+                </div>
+                
+                <div class="examples">
+                    Examples: <code>https://www.youtube.com/watch?v=dQw4w9WgXcQ</code> or <code>dQw4w9WgXcQ</code>
+                </div>
+                
+                <div id="status-message" class="status-message"></div>
+            </div>
+            
+            <div id="thumbnail-preview" class="thumbnail-preview">
+                <div class="thumbnail-preview-header">
+                    <h4>Available Thumbnails</h4>
+                    <button id="back-btn" class="secondary-btn">
+                        <i class="fas fa-arrow-left"></i> Try Another URL
+                    </button>
+                </div>
+                
+                <div id="video-info" class="video-info">
+                    <div class="video-info-image">
+                        <img id="video-thumbnail" src="" alt="Video Thumbnail" />
+                    </div>
+                    <div class="video-info-details">
+                        <div id="video-title" class="video-info-title"></div>
+                        <div id="video-channel" class="video-info-channel"></div>
+                        <div id="video-date" class="video-info-date"></div>
+                    </div>
+                </div>
+                
+                <div id="thumbnails-grid" class="thumbnails-grid">
+                    <!-- Thumbnail items will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for thumbnail preview -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close">&times;</span>
+            <img id="modal-image" class="modal-image" src="" alt="Thumbnail Preview" />
+            <div class="modal-details">
+                <div id="modal-resolution" class="thumbnail-resolution"></div>
+                <div class="thumbnail-buttons">
+                    <button id="modal-download" class="thumbnail-button download-btn">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function inityoutubehumbnaildownloader() {
+    // Elements
+    const youtubeUrl = document.getElementById('youtube-url');
+    const fetchBtn = document.getElementById('fetch-btn');
+    const statusMessage = document.getElementById('status-message');
+    const thumbnailPreview = document.getElementById('thumbnail-preview');
+    const backBtn = document.getElementById('back-btn');
+    const videoThumbnail = document.getElementById('video-thumbnail');
+    const videoTitle = document.getElementById('video-title');
+    const videoChannel = document.getElementById('video-channel');
+    const videoDate = document.getElementById('video-date');
+    const thumbnailsGrid = document.getElementById('thumbnails-grid');
+    const previewModal = document.getElementById('preview-modal');
+    const modalImage = document.getElementById('modal-image');
+    const modalResolution = document.getElementById('modal-resolution');
+    const modalDownload = document.getElementById('modal-download');
+    const modalClose = document.getElementById('modal-close');
+    
+    // Thumbnail quality options
+    const thumbnailQualities = [
+        { id: 'maxresdefault', name: 'Maximum Resolution', width: 1280, height: 720 },
+        { id: 'sddefault', name: 'Standard Definition', width: 640, height: 480 },
+        { id: 'hqdefault', name: 'High Quality', width: 480, height: 360 },
+        { id: 'mqdefault', name: 'Medium Quality', width: 320, height: 180 },
+        { id: 'default', name: 'Default Quality', width: 120, height: 90 }
+    ];
+    
+    // Current video ID
+    let currentVideoId = '';
+    
+    // Event listeners
+    fetchBtn.addEventListener('click', fetchThumbnails);
+    backBtn.addEventListener('click', resetTool);
+    youtubeUrl.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            fetchThumbnails();
+        }
+    });
+    
+    modalClose.addEventListener('click', () => {
+        previewModal.style.display = 'none';
+    });
+    
+    previewModal.addEventListener('click', (e) => {
+        if (e.target === previewModal) {
+            previewModal.style.display = 'none';
+        }
+    });
+    
+    // Function to extract video ID from YouTube URL
+    function extractVideoId(url) {
+        // If it's already just a video ID (11 characters)
+        if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) {
+            return url.trim();
+        }
+        
+        // Try to extract from URL
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[7].length === 11) ? match[7] : null;
+    }
+    
+    // Function to fetch thumbnails
+    function fetchThumbnails() {
+        const url = youtubeUrl.value.trim();
+        
+        if (!url) {
+            showError('Please enter a YouTube URL or video ID');
+            return;
+        }
+        
+        const videoId = extractVideoId(url);
+        
+        if (!videoId) {
+            showError('Invalid YouTube URL or video ID');
+            return;
+        }
+        
+        currentVideoId = videoId;
+        showInfo('Fetching thumbnails...');
+        
+        // In a real application, we might fetch video info from the YouTube API
+        // For this demo, we'll just populate with the available thumbnail formats
+        
+        // Clear previous thumbnails
+        thumbnailsGrid.innerHTML = '';
+        
+        // Set video info (this would be fetched from the API in a real app)
+        videoThumbnail.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+        videoTitle.textContent = `YouTube Video (${videoId})`;
+        videoChannel.textContent = 'Channel information unavailable in demo';
+        videoDate.textContent = 'Upload date unavailable in demo';
+        
+        // Add thumbnail options
+        thumbnailQualities.forEach(quality => {
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.id}.jpg`;
+            
+            // Create thumbnail item
+            const thumbnailItem = document.createElement('div');
+            thumbnailItem.className = 'thumbnail-item';
+            thumbnailItem.innerHTML = `
+                <div class="thumbnail-image">
+                    <img src="${thumbnailUrl}" alt="${quality.name}" loading="lazy" />
+                </div>
+                <div class="thumbnail-details">
+                    <div class="thumbnail-title">${quality.name}</div>
+                    <div class="thumbnail-resolution">${quality.width} x ${quality.height} px</div>
+                    <div class="thumbnail-buttons">
+                        <button class="thumbnail-button download-btn" data-url="${thumbnailUrl}" data-quality="${quality.name}">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="thumbnail-button preview-btn" data-url="${thumbnailUrl}" data-quality="${quality.name}" data-resolution="${quality.width} x ${quality.height}">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            thumbnailsGrid.appendChild(thumbnailItem);
+        });
+        
+        // Add event listeners to buttons
+        document.querySelectorAll('.download-btn[data-url]').forEach(button => {
+            button.addEventListener('click', function() {
+                downloadThumbnail(this.getAttribute('data-url'), this.getAttribute('data-quality'));
+            });
+        });
+        
+        document.querySelectorAll('.preview-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                previewThumbnail(
+                    this.getAttribute('data-url'), 
+                    this.getAttribute('data-quality'),
+                    this.getAttribute('data-resolution')
+                );
+            });
+        });
+        
+        // Show thumbnail preview section
+        statusMessage.style.display = 'none';
+        thumbnailPreview.style.display = 'block';
+    }
+    
+    // Function to download thumbnail
+    function downloadThumbnail(url, quality) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `youtube_thumbnail_${currentVideoId}_${quality.replace(/\s+/g, '_').toLowerCase()}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+    
+    // Function to preview thumbnail
+    function previewThumbnail(url, quality, resolution) {
+        modalImage.src = url;
+        modalResolution.textContent = `${quality} (${resolution} px)`;
+        
+        modalDownload.onclick = function() {
+            downloadThumbnail(url, quality);
+        };
+        
+        previewModal.style.display = 'flex';
+    }
+    
+    // Function to show error message
+    function showError(message) {
+        statusMessage.className = 'status-message error';
+        statusMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+        statusMessage.style.display = 'block';
+    }
+    
+    // Function to show info message
+    function showInfo(message) {
+        statusMessage.className = 'status-message info';
+        statusMessage.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        statusMessage.style.display = 'block';
+    }
+    
+    // Function to reset the tool
+    function resetTool() {
+        statusMessage.style.display = 'none';
+        thumbnailPreview.style.display = 'none';
+        youtubeUrl.value = '';
+        youtubeUrl.focus();
+    }
+}
+</script> 

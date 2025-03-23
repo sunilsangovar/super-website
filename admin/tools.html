@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Tools - Admin Panel</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="theme-default admin-panel">
+    <!-- Header Section -->
+    <header class="admin-header">
+        <div class="header-left">
+            <button id="sidebar-toggle" class="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="site-title">
+                <i class="fas fa-tools"></i>
+                <h1>Admin Panel</h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-profile">
+                <span class="admin-username">Admin</span>
+                <img src="../images/admin-profile.png" alt="Admin Profile">
+                <div class="profile-dropdown">
+                    <a href="../index.html">View Site</a>
+                    <a href="profile.html">Profile</a>
+                    <a href="../logout.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar admin-sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="tools.html">
+                            <i class="fas fa-tools"></i>
+                            <span>Manage Tools</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="content.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Content</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Site Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="users.html">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content admin-content" id="main-content">
+            <div class="admin-header-bar">
+                <h2>Manage Tools</h2>
+                <div class="admin-actions">
+                    <button class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tools List -->
+            <div class="admin-section">
+                <h3>Tools List</h3>
+                <div id="tools-list">
+                    <!-- Tools will be loaded dynamically here -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading tools...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add/Edit Tool Form -->
+            <div class="admin-section">
+                <h3>Add New Tool</h3>
+                <form id="tool-form" class="admin-form">
+                    <input type="hidden" id="tool-id" value="">
+                    
+                    <div class="form-group">
+                        <label for="tool-name">Tool Name</label>
+                        <input type="text" id="tool-name" class="form-control" placeholder="Enter tool name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tool-icon">Icon Class</label>
+                        <input type="text" id="tool-icon" class="form-control" placeholder="e.g. fas fa-calculator" required>
+                        <small>Use Font Awesome icon classes. <a href="https://fontawesome.com/icons" target="_blank">Browse icons</a></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tool-description">Description</label>
+                        <textarea id="tool-description" class="form-control" placeholder="Enter tool description" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tool-content">Tool Content (HTML)</label>
+                        <textarea id="tool-content" class="form-control" rows="10" placeholder="Enter HTML content for the tool"></textarea>
+                        <small>You can include HTML, CSS, and JavaScript for the tool functionality.</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="resetForm()">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Tool</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        function resetForm() {
+            document.getElementById('tool-form').reset();
+            document.getElementById('tool-id').value = '';
+            document.querySelector('.admin-section h3').textContent = 'Add New Tool';
+        }
+    </script>
+</body>
+</html> 

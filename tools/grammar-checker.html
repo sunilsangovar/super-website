@@ -1,0 +1,634 @@
+<!-- Add meta tag for the tool icon -->
+<meta name="tool-icon" content="fas fa-spell-check">
+<div class="tool-content" data-tool-icon="fas fa-spell-check">
+    <style>
+        /* Grammar Checker Specific Styles */
+        .grammar-checker-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .info-box {
+            background-color: var(--info-bg-color, #d1ecf1);
+            border: 1px solid var(--info-color, #0c5460);
+            color: var(--info-color, #0c5460);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .info-box-title {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-box-title i {
+            margin-right: 0.5rem;
+        }
+        
+        .info-box ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .info-box li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .text-input-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .text-input-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .text-input-container {
+            position: relative;
+        }
+        
+        .text-input {
+            width: 100%;
+            height: 200px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary-color, #007bff);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        .text-input-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.875rem;
+        }
+        
+        .character-count, .word-count {
+            display: flex;
+            align-items: center;
+        }
+        
+        .character-count i, .word-count i {
+            margin-right: 0.25rem;
+        }
+        
+        .clear-text-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color, #007bff);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .clear-text-btn:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        
+        .options-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-group input {
+            margin-right: 0.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: var(--primary-color, #007bff);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--primary-dark-color, #0069d9);
+        }
+        
+        .secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: transparent;
+            color: var(--primary-color, #007bff);
+            border: 1px solid var(--primary-color, #007bff);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .secondary-btn:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        
+        .results-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .results-tab-container {
+            display: flex;
+            border-bottom: 1px solid var(--border-color, #ddd);
+            margin-bottom: 1rem;
+        }
+        
+        .results-tab {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .results-tab.active {
+            color: var(--primary-color, #007bff);
+            border-bottom-color: var(--primary-color, #007bff);
+        }
+        
+        .results-content {
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .error-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color, #ddd);
+        }
+        
+        .error-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .error-type {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        
+        .error-type i {
+            margin-right: 0.5rem;
+        }
+        
+        .error-type.grammar {
+            color: var(--error-color, #dc3545);
+        }
+        
+        .error-type.spelling {
+            color: var(--warning-color, #ffc107);
+        }
+        
+        .error-type.style {
+            color: var(--info-color, #17a2b8);
+        }
+        
+        .error-context {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.03);
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .error-description {
+            margin-bottom: 0.5rem;
+        }
+        
+        .error-suggestion {
+            margin-bottom: 0.5rem;
+        }
+        
+        .suggestion-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .suggestion-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .suggestion-option {
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(0, 123, 255, 0.1);
+            color: var(--primary-color, #007bff);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .suggestion-option:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .error-btn {
+            padding: 0.25rem 0.75rem;
+            background-color: transparent;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .error-btn:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        .error-btn.ignore {
+            color: var(--muted-text-color, #6c757d);
+        }
+        
+        .error-btn.ignore-all {
+            color: var(--muted-text-color, #6c757d);
+        }
+        
+        .empty-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted-text-color, #6c757d);
+        }
+        
+        .empty-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--success-color, #28a745);
+        }
+        
+        .summary-container {
+            background-color: var(--card-bg-color, #f8f9fa);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .summary-header {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .summary-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--success-color, #28a745);
+        }
+        
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-description {
+            color: var(--muted-text-color, #6c757d);
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: var(--muted-text-color, #6c757d);
+            font-size: 0.875rem;
+        }
+        
+        .stat-card.error-stat .stat-value {
+            color: var(--error-color, #dc3545);
+        }
+        
+        .stat-card.warning-stat .stat-value {
+            color: var(--warning-color, #ffc107);
+        }
+        
+        .stat-card.info-stat .stat-value {
+            color: var(--info-color, #17a2b8);
+        }
+        
+        .stat-card.success-stat .stat-value {
+            color: var(--success-color, #28a745);
+        }
+        
+        .summary-improvement {
+            margin-bottom: 1rem;
+        }
+        
+        .improvement-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .improvement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .improvement-item i {
+            margin-right: 0.5rem;
+            color: var(--success-color, #28a745);
+        }
+    </style>
+
+    <div class="tool-input">
+        <h3>Grammar Checker</h3>
+        
+        <div class="grammar-checker-container">
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle"></i> About Grammar Checker
+                </div>
+                <p>This tool helps you identify grammar and spelling mistakes in your text.</p>
+                <ul>
+                    <li>Paste your text in the box below to check for errors</li>
+                    <li>View suggestions for improving your writing</li>
+                    <li>Get a summary of grammar, spelling, and style issues</li>
+                </ul>
+                <p><strong>Note:</strong> This is a demonstration version. For a full implementation, server-side processing would be required.</p>
+            </div>
+            
+            <!-- Text Input Section -->
+            <form action="https://httpbin.org/post" method="post" target="_blank">
+                <div class="text-input-section">
+                    <label for="text-input" class="text-input-label">Enter or paste your text:</label>
+                    <div class="text-input-container">
+                        <textarea id="text-input" name="text-input" class="text-input" placeholder="Type or paste your text here to check for grammar errors...">I have went to the store yesterday. They're car is broken down. Its going to be a beautifull day. We should of gone to the concert.</textarea>
+                    </div>
+                    <div class="text-input-stats">
+                        <div>
+                            <span class="character-count"><i class="fas fa-font"></i> Characters: 156</span>
+                            <span class="word-count" style="margin-left: 1rem;"><i class="fas fa-align-left"></i> Words: 26</span>
+                        </div>
+                        <button type="reset" class="clear-text-btn"><i class="fas fa-times"></i> Clear text</button>
+                    </div>
+                </div>
+                
+                <!-- Options Section -->
+                <div class="options-section">
+                    <div class="options-grid">
+                        <div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="check-grammar" name="check-grammar" checked>
+                                <label for="check-grammar">Grammar</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="check-spelling" name="check-spelling" checked>
+                                <label for="check-spelling">Spelling</label>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="check-punctuation" name="check-punctuation" checked>
+                                <label for="check-punctuation">Punctuation</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="check-style" name="check-style" checked>
+                                <label for="check-style">Style & Readability</label>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="formal-writing" name="formal-writing">
+                                <label for="formal-writing">Formal Writing</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="academic-writing" name="academic-writing">
+                                <label for="academic-writing">Academic Writing</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="submit" class="primary-btn">
+                        <i class="fas fa-check-circle"></i> Check Grammar
+                    </button>
+                    <button type="button" class="secondary-btn">
+                        <i class="fas fa-copy"></i> Copy Text
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-tab-container">
+                    <div class="results-tab active">Issues (4)</div>
+                    <div class="results-tab">Summary</div>
+                </div>
+                
+                <div class="results-content">
+                    <!-- Error Items - These would normally be generated dynamically -->
+                    <div class="error-item">
+                        <div class="error-header">
+                            <div class="error-type grammar">
+                                <i class="fas fa-exclamation-circle"></i> Grammar Error
+                            </div>
+                        </div>
+                        <div class="error-context">I have <mark style="background-color: rgba(220, 53, 69, 0.2); padding: 0 2px;">went</mark> to the store yesterday.</div>
+                        <div class="error-description">Incorrect verb form. The past participle 'went' should not be used with 'have'.</div>
+                        <div class="error-suggestion">
+                            <div class="suggestion-title">Suggestions:</div>
+                            <div class="suggestion-options">
+                                <div class="suggestion-option">gone</div>
+                            </div>
+                        </div>
+                        <div class="error-actions">
+                            <button class="error-btn ignore">Ignore</button>
+                            <button class="error-btn ignore-all">Ignore All</button>
+                        </div>
+                    </div>
+                    
+                    <div class="error-item">
+                        <div class="error-header">
+                            <div class="error-type grammar">
+                                <i class="fas fa-exclamation-circle"></i> Grammar Error
+                            </div>
+                        </div>
+                        <div class="error-context">They're <mark style="background-color: rgba(220, 53, 69, 0.2); padding: 0 2px;">car</mark> is broken down.</div>
+                        <div class="error-description">Incorrect use of "They're". "They're" is a contraction of "They are".</div>
+                        <div class="error-suggestion">
+                            <div class="suggestion-title">Suggestions:</div>
+                            <div class="suggestion-options">
+                                <div class="suggestion-option">Their car</div>
+                            </div>
+                        </div>
+                        <div class="error-actions">
+                            <button class="error-btn ignore">Ignore</button>
+                            <button class="error-btn ignore-all">Ignore All</button>
+                        </div>
+                    </div>
+                    
+                    <div class="error-item">
+                        <div class="error-header">
+                            <div class="error-type spelling">
+                                <i class="fas fa-spell-check"></i> Spelling Error
+                            </div>
+                        </div>
+                        <div class="error-context">Its going to be a <mark style="background-color: rgba(255, 193, 7, 0.2); padding: 0 2px;">beautifull</mark> day.</div>
+                        <div class="error-description">The word "beautifull" is misspelled.</div>
+                        <div class="error-suggestion">
+                            <div class="suggestion-title">Suggestions:</div>
+                            <div class="suggestion-options">
+                                <div class="suggestion-option">beautiful</div>
+                            </div>
+                        </div>
+                        <div class="error-actions">
+                            <button class="error-btn ignore">Ignore</button>
+                            <button class="error-btn ignore-all">Ignore All</button>
+                        </div>
+                    </div>
+                    
+                    <div class="error-item">
+                        <div class="error-header">
+                            <div class="error-type grammar">
+                                <i class="fas fa-exclamation-circle"></i> Grammar Error
+                            </div>
+                        </div>
+                        <div class="error-context">We should <mark style="background-color: rgba(220, 53, 69, 0.2); padding: 0 2px;">of gone</mark> to the concert.</div>
+                        <div class="error-description">Incorrect phrase. "Should of" is a common mistake.</div>
+                        <div class="error-suggestion">
+                            <div class="suggestion-title">Suggestions:</div>
+                            <div class="suggestion-options">
+                                <div class="suggestion-option">should have gone</div>
+                            </div>
+                        </div>
+                        <div class="error-actions">
+                            <button class="error-btn ignore">Ignore</button>
+                            <button class="error-btn ignore-all">Ignore All</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- This would be shown when the Summary tab is active -->
+                <div class="summary-container" style="display: none;">
+                    <div class="summary-header">
+                        <div class="summary-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="summary-title">Grammar Check Summary</div>
+                        <div class="summary-description">Your text has been analyzed for grammar, spelling, and style issues.</div>
+                    </div>
+                    
+                    <div class="summary-stats">
+                        <div class="stat-card error-stat">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Grammar Errors</div>
+                        </div>
+                        <div class="stat-card warning-stat">
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Spelling Errors</div>
+                        </div>
+                        <div class="stat-card info-stat">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Style Issues</div>
+                        </div>
+                        <div class="stat-card success-stat">
+                            <div class="stat-value">72%</div>
+                            <div class="stat-label">Overall Score</div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-improvement">
+                        <div class="improvement-title">Improvement Areas:</div>
+                        <div class="improvement-item">
+                            <i class="fas fa-check"></i> Verb forms (have gone vs. have went)
+                        </div>
+                        <div class="improvement-item">
+                            <i class="fas fa-check"></i> Possessive pronouns (their vs. they're)
+                        </div>
+                        <div class="improvement-item">
+                            <i class="fas fa-check"></i> Common phrases (should have vs. should of)
+                        </div>
+                        <div class="improvement-item">
+                            <i class="fas fa-check"></i> Spelling accuracy
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
