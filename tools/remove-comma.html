@@ -3,12 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Generator - Advanced Tools Website</title>
+    <title>Age Calculator - Advanced Tools Website</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/themes.css">
     <link rel="stylesheet" href="../css/tool.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="tool-icon" content="fas fa-key">
+    <meta name="tool-icon" content="fas fa-birthday-cake">
+    <style>
+    .tgs {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+    }
+
+    .tagscontainer {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #inputTags {
+        width: 100%;
+        height: 100px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        padding: 8px;
+    }
+
+    #outputTags {
+        width: 100%;
+        height: 300px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        padding: 8px;
+    }
+
+    .button-tagscontainer {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    #processBtn,
+    #copyBtn,
+    #nextBtn,
+    #pasteBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #processBtn {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    #processBtn:hover {
+        background-color: #218838;
+    }
+
+    #copyBtn {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    #copyBtn:hover {
+        background-color: #0056b3;
+    }
+
+    #nextBtn {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    #nextBtn:hover {
+        background-color: #e0a800;
+    }
+
+    #pasteBtn {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    #pasteBtn:hover {
+        background-color: #5a6268;
+    }
+
+    /* Animation for copied text */
+    @keyframes copied {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .copied {
+        animation: copied 0.5s ease;
+    }
+
+    #output {
+        margin-top: 20px;
+    }
+
+    </style>
 </head>
 <body class="theme-default">
     <!-- Header Section -->
@@ -71,7 +188,7 @@
                     <!-- Static tool links with direct paths -->
                     <li><a href="../index.html"><i class="fas fa-home"></i><span>Home</span></a></li>
                     <li><a href="text-analyzer.html"><i class="fas fa-font"></i><span>Text Analyzer</span></a></li>
-                    <li class="active"><a href="password-generator.html"><i class="fas fa-key" style="color: var(--primary-color);"></i><span>Password Generator</span></a></li>
+                    <li><a href="password-generator.html"><i class="fas fa-key"></i><span>Password Generator</span></a></li>
                     <li><a href="image-resizer.html"><i class="fas fa-image"></i><span>Image Resizer</span></a></li>
                     <li><a href="qr-code-generator.html"><i class="fas fa-qrcode"></i><span>QR Code Generator</span></a></li>
                     <li><a href="text-to-speech.html"><i class="fas fa-volume-up"></i><span>Text to Speech</span></a></li>
@@ -84,7 +201,7 @@
                     <li><a href="background-remover.html"><i class="fas fa-cut"></i><span>Background Remover</span></a></li>
                     <li><a href="pdf-editor.html"><i class="fas fa-edit"></i><span>PDF Editor</span></a></li>
                     <li><a href="code-generator.html"><i class="fas fa-code"></i><span>Code Generator</span></a></li>
-                    <li><a href="age-calculator.html"><i class="fas fa-birthday-cake"></i><span>Age Calculator</span></a></li>
+                    <li class="active"><a href="age-calculator.html"><i class="fas fa-birthday-cake" style="color: var(--primary-color);"></i><span>Age Calculator</span></a></li>
                     <li><a href="emi-calculator.html"><i class="fas fa-money-bill"></i><span>EMI Calculator</span></a></li>
                     <li><a href="color-converter.html"><i class="fas fa-palette"></i><span>Color Converter</span></a></li>
                 </ul>
@@ -97,53 +214,28 @@
             <div class="breadcrumb" id="breadcrumb">
                 <a href="../index.html">Home</a>
                 <span class="separator">&gt;</span>
-                <span class="current-page">Password Generator</span>
+                <span class="current-page">Age Calculator</span>
             </div>
 
             <!-- Main Content Area -->
             <main class="content" id="main-content">
                 <!-- Tool Content -->
-                <div class="tool-content" data-tool-icon="fas fa-key">
-                    <div class="tool-input">
-                        <h3>Password Options</h3>
-                        <div class="input-group">
-                            <label for="password-length">Length:</label>
-                            <input type="number" id="password-length" min="4" max="64" value="12">
-                        </div>
-                        <div class="checkbox-group">
-                            <div class="checkbox">
-                                <input type="checkbox" id="include-uppercase" checked>
-                                <label for="include-uppercase">Include Uppercase Letters</label>
+                <div class="content-section" id="mymenu">
+                    <h2>Remove Tags Commas</h2>
+                    <div class="tgs">
+                        <div class="tagscontainer">
+                            <textarea id="inputTags"
+                                placeholder="Enter tags separated by commas (e.g., shorts, shorts video, trending shorts)"></textarea>
+                            <div class="button-tagscontainer">
+                                <button id="pasteBtn">Paste</button>
+                                <button id="processBtn">Process Tags</button>
+                                <button id="copyBtn">Copy Output</button>
+                                <button id="nextBtn">Next Tags</button>
                             </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="include-lowercase" checked>
-                                <label for="include-lowercase">Include Lowercase Letters</label>
+                            <div id="output">
+                                <textarea id="outputTags" readonly
+                                    placeholder="Processed output will appear here"></textarea>
                             </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="include-numbers" checked>
-                                <label for="include-numbers">Include Numbers</label>
-                            </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="include-symbols">
-                                <label for="include-symbols">Include Symbols</label>
-                            </div>
-                        </div>
-                        <button id="generate-btn" class="primary-btn">Generate Password</button>
-                    </div>
-                    <div class="tool-output">
-                        <h3>Generated Password</h3>
-                        <div class="password-result">
-                            <input type="text" id="password-output" readonly>
-                            <button id="copy-btn" class="secondary-btn">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                        <div class="password-strength">
-                            <div class="strength-label">Password Strength:</div>
-                            <div class="strength-meter">
-                                <div id="strength-indicator"></div>
-                            </div>
-                            <div id="strength-text">Generate a password to see its strength</div>
                         </div>
                     </div>
                 </div>
@@ -161,10 +253,37 @@
         </div>
         <div class="copyright" id="copyright">
             &copy; <span id="current-year">2023</span> Advanced Tools Website. All rights reserved.
-        </div>
+</div>
     </footer>
 
     <!-- Scripts -->
     <script src="../js/main.js"></script>
+    <script>
+        document.getElementById('processBtn').addEventListener('click', function () {
+            const inputTags = document.getElementById('inputTags').value;
+            const processedTags = inputTags.replace(/,/g, '\n');
+            document.getElementById('outputTags').value = processedTags;
+        });
+    
+        document.getElementById('copyBtn').addEventListener('click', function () {
+            const outputTags = document.getElementById('outputTags');
+            outputTags.select();
+            document.execCommand('copy');
+        });
+    
+        document.getElementById('nextBtn').addEventListener('click', function () {
+            document.getElementById('inputTags').value = '';
+            document.getElementById('outputTags').value = '';
+        });
+    
+        document.getElementById('pasteBtn').addEventListener('click', async function () {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('inputTags').value = text;
+            } catch (err) {
+                console.error('Failed to read clipboard contents: ', err);
+            }
+        });
+    </script>
 </body>
 </html>

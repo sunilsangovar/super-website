@@ -1,695 +1,215 @@
-<!-- Add meta tag for the tool icon -->
-<meta name="tool-icon" content="fas fa-calculator">
-<div class="tool-content" data-tool-icon="fas fa-calculator">
-    <style>
-        /* Online Calculator Specific Styles */
-        .calculator-container {
-            max-width: 400px;
-            margin: 0 auto;
-            font-family: var(--body-font-family, Arial, sans-serif);
-        }
-        
-        .calculator-display {
-            background-color: var(--card-bg-color, #f8f9fa);
-            border: 1px solid var(--border-color, #ddd);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-        
-        .calculator-expression {
-            font-size: 0.9rem;
-            min-height: 1.2rem;
-            color: var(--muted-text-color, #6c757d);
-            text-align: right;
-            margin-bottom: 0.5rem;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        
-        .calculator-result {
-            font-size: 2rem;
-            font-weight: 500;
-            text-align: right;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        
-        .calculator-keypad {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.5rem;
-        }
-        
-        .calculator-key {
-            background-color: var(--card-bg-color, #f8f9fa);
-            border: 1px solid var(--border-color, #ddd);
-            border-radius: 8px;
-            padding: 1rem 0;
-            font-size: 1.25rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
-        
-        .calculator-key:hover {
-            background-color: var(--hover-bg-color, #e9ecef);
-        }
-        
-        .calculator-key:active {
-            transform: scale(0.95);
-        }
-        
-        .calculator-key.operator {
-            background-color: var(--hover-bg-color, #e9ecef);
-            color: var(--primary-color, #007bff);
-            font-weight: 500;
-        }
-        
-        .calculator-key.equals {
-            background-color: var(--primary-color, #007bff);
-            color: white;
-            grid-column: span 2;
-        }
-        
-        .calculator-key.equals:hover {
-            background-color: var(--primary-dark-color, #0069d9);
-        }
-        
-        .calculator-key.clear, .calculator-key.backspace {
-            background-color: var(--error-bg-color, #f8d7da);
-            color: var(--error-color, #dc3545);
-        }
-        
-        .calculator-key.clear:hover, .calculator-key.backspace:hover {
-            background-color: var(--error-hover-bg-color, #f1b0b7);
-        }
-        
-        .calculator-memory {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .calculator-memory-key {
-            background-color: var(--hover-bg-color, #e9ecef);
-            border: 1px solid var(--border-color, #ddd);
-            border-radius: 4px;
-            padding: 0.5rem;
-            font-size: 0.875rem;
-            text-align: center;
-            cursor: pointer;
-            flex: 1;
-            transition: all 0.2s ease;
-        }
-        
-        .calculator-memory-key:hover {
-            background-color: var(--card-bg-color, #f8f9fa);
-        }
-        
-        .calculator-memory-key.active {
-            color: var(--primary-color, #007bff);
-            font-weight: 500;
-        }
-        
-        .calculator-history {
-            margin-top: 2rem;
-            border-top: 1px solid var(--border-color, #ddd);
-            padding-top: 1rem;
-        }
-        
-        .calculator-history-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .calculator-history-title h4 {
-            margin: 0;
-        }
-        
-        .calculator-history-clear {
-            color: var(--error-color, #dc3545);
-            cursor: pointer;
-            font-size: 0.875rem;
-        }
-        
-        .calculator-history-items {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .calculator-history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem;
-            border-bottom: 1px solid var(--border-color, #ddd);
-            cursor: pointer;
-        }
-        
-        .calculator-history-item:hover {
-            background-color: var(--hover-bg-color, #e9ecef);
-        }
-        
-        .calculator-history-expression {
-            color: var(--muted-text-color, #6c757d);
-        }
-        
-        .calculator-history-result {
-            font-weight: 500;
-        }
-        
-        .calculator-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border-color, #ddd);
-            margin-bottom: 1rem;
-        }
-        
-        .calculator-tab {
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .calculator-tab.active {
-            border-bottom-color: var(--primary-color, #007bff);
-            color: var(--primary-color, #007bff);
-            font-weight: 500;
-        }
-        
-        .calculator-scientific-keys {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-    </style>
-
-    <div class="tool-input">
-        <h3>Online Calculator</h3>
-        
-        <div class="calculator-container">
-            <div class="calculator-tabs">
-                <div class="calculator-tab active" data-tab="standard">Standard</div>
-                <div class="calculator-tab" data-tab="scientific">Scientific</div>
-            </div>
-            
-            <div class="calculator-display">
-                <div class="calculator-expression" id="calc-expression"></div>
-                <div class="calculator-result" id="calc-result">0</div>
-            </div>
-            
-            <div id="scientific-keys" class="calculator-scientific-keys" style="display: none;">
-                <div class="calculator-key" data-action="function" data-value="sin">sin</div>
-                <div class="calculator-key" data-action="function" data-value="cos">cos</div>
-                <div class="calculator-key" data-action="function" data-value="tan">tan</div>
-                <div class="calculator-key" data-action="function" data-value="sqrt">√</div>
-                <div class="calculator-key" data-action="function" data-value="log">log</div>
-                <div class="calculator-key" data-action="function" data-value="ln">ln</div>
-                <div class="calculator-key" data-action="power" data-value="2">x²</div>
-                <div class="calculator-key" data-action="power" data-value="3">x³</div>
-                <div class="calculator-key" data-action="constant" data-value="3.14159265359">π</div>
-                <div class="calculator-key" data-action="constant" data-value="2.71828182846">e</div>
-                <div class="calculator-key" data-action="operator" data-value="^">x^y</div>
-                <div class="calculator-key" data-action="factorial">x!</div>
-            </div>
-            
-            <div class="calculator-keypad">
-                <div class="calculator-key clear" data-action="clear">C</div>
-                <div class="calculator-key backspace" data-action="backspace">⌫</div>
-                <div class="calculator-key operator" data-action="operator" data-value="%">%</div>
-                <div class="calculator-key operator" data-action="operator" data-value="/">÷</div>
-                
-                <div class="calculator-key" data-action="number" data-value="7">7</div>
-                <div class="calculator-key" data-action="number" data-value="8">8</div>
-                <div class="calculator-key" data-action="number" data-value="9">9</div>
-                <div class="calculator-key operator" data-action="operator" data-value="*">×</div>
-                
-                <div class="calculator-key" data-action="number" data-value="4">4</div>
-                <div class="calculator-key" data-action="number" data-value="5">5</div>
-                <div class="calculator-key" data-action="number" data-value="6">6</div>
-                <div class="calculator-key operator" data-action="operator" data-value="-">−</div>
-                
-                <div class="calculator-key" data-action="number" data-value="1">1</div>
-                <div class="calculator-key" data-action="number" data-value="2">2</div>
-                <div class="calculator-key" data-action="number" data-value="3">3</div>
-                <div class="calculator-key operator" data-action="operator" data-value="+">+</div>
-                
-                <div class="calculator-key" data-action="number" data-value="0">0</div>
-                <div class="calculator-key" data-action="decimal" data-value=".">.</div>
-                <div class="calculator-key equals" data-action="calculate">=</div>
-            </div>
-            
-            <div class="calculator-memory">
-                <div class="calculator-memory-key" data-action="memory" data-value="mc">MC</div>
-                <div class="calculator-memory-key" data-action="memory" data-value="mr">MR</div>
-                <div class="calculator-memory-key" data-action="memory" data-value="m+">M+</div>
-                <div class="calculator-memory-key" data-action="memory" data-value="m-">M-</div>
-                <div class="calculator-memory-key" data-action="memory" data-value="ms">MS</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Calculator - Advanced Tools Website</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="../css/tool.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="tool-icon" content="fas fa-calculator">
+</head>
+<body class="theme-default">
+    <!-- Header Section -->
+    <header>
+        <div class="header-left">
+            <button id="sidebar-toggle" class="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="site-title">
+                <a href="../index.html">
+                    <i class="fas fa-tools"></i>
+                    <h1 id="site-title-text">Advanced Tools</h1>
+                </a>
             </div>
         </div>
-        
-        <div class="calculator-history">
-            <div class="calculator-history-title">
-                <h4>History</h4>
-                <span class="calculator-history-clear" id="clear-history">Clear History</span>
+        <div class="header-center">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search tools..." disabled>
+                <button id="search-button" disabled><i class="fas fa-search"></i></button>
             </div>
-            <div class="calculator-history-items" id="history-items">
-                <!-- History items will be added here dynamically -->
-                <div class="calculator-history-empty">No calculations yet</div>
+        </div>
+        <div class="header-right">
+            <div class="settings-dropdown">
+                <button class="settings-btn"><i class="fas fa-cog"></i></button>
+                <div class="settings-content">
+                    <div class="theme-selector">
+                        <p>Theme:</p>
+                        <button class="theme-btn" data-theme="default">Default</button>
+                        <button class="theme-btn" data-theme="dark">Dark</button>
+                        <button class="theme-btn" data-theme="light">Light</button>
+                    </div>
+                    <div class="dark-mode-toggle">
+                        <p>Dark Mode:</p>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
+            <div class="user-profile">
+                <div class="profile-image">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-dropdown">
+                    <a href="../pages/login.html">Login</a>
+                    <a href="../pages/admin.html">Admin Panel</a>
+                    <a href="../pages/logout.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar active" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul id="tools-menu">
+                    <!-- Static tool links with direct paths -->
+                    <li><a href="../index.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+                    <li><a href="text-analyzer.html"><i class="fas fa-font"></i><span>Text Analyzer</span></a></li>
+                    <li><a href="password-generator.html"><i class="fas fa-key"></i><span>Password Generator</span></a></li>
+                    <li><a href="image-resizer.html"><i class="fas fa-image"></i><span>Image Resizer</span></a></li>
+                    <li><a href="qr-code-generator.html"><i class="fas fa-qrcode"></i><span>QR Code Generator</span></a></li>
+                    <li><a href="text-to-speech.html"><i class="fas fa-volume-up"></i><span>Text to Speech</span></a></li>
+                    <li><a href="mp4-to-mp3.html"><i class="fas fa-file-audio"></i><span>MP4 to MP3</span></a></li>
+                    <li class="active"><a href="online-calculator.html"><i class="fas fa-calculator" style="color: var(--primary-color);"></i><span>Online Calculator</span></a></li>
+                    <li><a href="yt-thumb-downloader.html"><i class="fab fa-youtube"></i><span>YT Thumb Downloader</span></a></li>
+                    <li><a href="yt-video-downloader.html"><i class="fab fa-youtube"></i><span>YT Video Downloader</span></a></li>
+                    <li><a href="pdf-merger.html"><i class="fas fa-file-pdf"></i><span>PDF Merger</span></a></li>
+                    <li><a href="grammar-checker.html"><i class="fas fa-spell-check"></i><span>Grammar Checker</span></a></li>
+                    <li><a href="background-remover.html"><i class="fas fa-cut"></i><span>Background Remover</span></a></li>
+                    <li><a href="pdf-editor.html"><i class="fas fa-edit"></i><span>PDF Editor</span></a></li>
+                    <li><a href="code-generator.html"><i class="fas fa-code"></i><span>Code Generator</span></a></li>
+                    <li><a href="age-calculator.html"><i class="fas fa-birthday-cake"></i><span>Age Calculator</span></a></li>
+                    <li><a href="emi-calculator.html"><i class="fas fa-money-bill"></i><span>EMI Calculator</span></a></li>
+                    <li><a href="color-converter.html"><i class="fas fa-palette"></i><span>Color Converter</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb" id="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span class="separator">&gt;</span>
+                <span class="current-page">Online Calculator</span>
+            </div>
+
+            <!-- Main Content Area -->
+            <main class="content" id="main-content">
+                <!-- Tool Content -->
+                <div class="tool-content" data-tool-icon="fas fa-calculator">
+                    <div class="tool-description">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquet nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquet nisl, eget ultricies nisl nisl eget nisl.</p>
+                    </div>
+                    <div class="calculator-container">
+                        <div class="calculator">
+                            <div class="calculator-display">
+                                <div class="calc-history" id="calc-history">
+                                    <span></span>
+                                </div>
+                                <div class="calc-output" id="calc-output">0</div>
+                            </div>
+                            <div class="calculator-keys">
+                                <div class="calculator-row">
+                                    <button class="calc-btn secondary" data-action="clear">C</button>
+                                    <button class="calc-btn secondary" data-action="backspace"><i class="fas fa-backspace"></i></button>
+                                    <button class="calc-btn secondary" data-action="percent">%</button>
+                                    <button class="calc-btn operator" data-action="divide">/</button>
+                                </div>
+                                <div class="calculator-row">
+                                    <button class="calc-btn number">7</button>
+                                    <button class="calc-btn number">8</button>
+                                    <button class="calc-btn number">9</button>
+                                    <button class="calc-btn operator" data-action="multiply">×</button>
+                                </div>
+                                <div class="calculator-row">
+                                    <button class="calc-btn number">4</button>
+                                    <button class="calc-btn number">5</button>
+                                    <button class="calc-btn number">6</button>
+                                    <button class="calc-btn operator" data-action="subtract">−</button>
+                                </div>
+                                <div class="calculator-row">
+                                    <button class="calc-btn number">1</button>
+                                    <button class="calc-btn number">2</button>
+                                    <button class="calc-btn number">3</button>
+                                    <button class="calc-btn operator" data-action="add">+</button>
+                                </div>
+                                <div class="calculator-row">
+                                    <button class="calc-btn number">0</button>
+                                    <button class="calc-btn number" data-action="decimal">.</button>
+                                    <button class="calc-btn operator" data-action="sign">±</button>
+                                    <button class="calc-btn equals" data-action="calculate">=</button>
+                                </div>
+                            </div>
+                            <div class="calculator-advanced" style="display: none;">
+                                <div class="advanced-row">
+                                    <button class="calc-btn function" data-action="sin">sin</button>
+                                    <button class="calc-btn function" data-action="cos">cos</button>
+                                    <button class="calc-btn function" data-action="tan">tan</button>
+                                    <button class="calc-btn function" data-action="pi">π</button>
+                                </div>
+                                <div class="advanced-row">
+                                    <button class="calc-btn function" data-action="log">log</button>
+                                    <button class="calc-btn function" data-action="ln">ln</button>
+                                    <button class="calc-btn function" data-action="power">x^y</button>
+                                    <button class="calc-btn function" data-action="sqrt">√</button>
+                                </div>
+                            </div>
+                            <div class="calculator-buttons">
+                                <button class="toggle-history-btn" id="toggle-history">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                                <button class="toggle-scientific-btn" id="toggle-scientific">
+                                    <i class="fas fa-flask"></i> Scientific
+                                </button>
+                                <button class="clear-history-btn" id="clear-history">
+                                    <i class="fas fa-trash"></i> Clear History
+                                </button>
+                            </div>
+                        </div>
+                        <div class="calculator-history-panel" style="display: none;">
+                            <h3>History</h3>
+                            <div class="history-list" id="history-list">
+                                <div class="history-item">
+                                    <div class="history-expression">2 + 2</div>
+                                    <div class="history-result">4</div>
+                                </div>
+                                <div class="history-item">
+                                    <div class="history-expression">10 * 5</div>
+                                    <div class="history-result">50</div>
+                                </div>
+                                <div class="history-item">
+                                    <div class="history-expression">100 / 4</div>
+                                    <div class="history-result">25</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
-</div>
 
-<script>
-function initonlinecalculator() {
-    // Calculator elements
-    const expression = document.getElementById('calc-expression');
-    const result = document.getElementById('calc-result');
-    const historyItems = document.getElementById('history-items');
-    const clearHistory = document.getElementById('clear-history');
-    const scientificKeys = document.getElementById('scientific-keys');
-    const tabs = document.querySelectorAll('.calculator-tab');
-    
-    // Calculator state
-    let currentInput = '0';
-    let currentExpression = '';
-    let lastResult = null;
-    let memory = 0;
-    let isMemorySet = false;
-    let calculationHistory = [];
-    
-    // Initialize
-    updateDisplay();
-    
-    // Event listeners for tabs
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            if (tab.dataset.tab === 'scientific') {
-                scientificKeys.style.display = 'grid';
-            } else {
-                scientificKeys.style.display = 'none';
-            }
-        });
-    });
-    
-    // Event listeners for keypad
-    document.querySelectorAll('.calculator-key, .calculator-memory-key').forEach(key => {
-        key.addEventListener('click', () => {
-            handleInput(key.dataset.action, key.dataset.value);
-        });
-    });
-    
-    // Clear history
-    clearHistory.addEventListener('click', () => {
-        calculationHistory = [];
-        updateHistoryDisplay();
-    });
-    
-    // Keyboard support
-    document.addEventListener('keydown', (e) => {
-        const key = e.key;
-        
-        if (key >= '0' && key <= '9') {
-            handleInput('number', key);
-        } else if (key === '.') {
-            handleInput('decimal', '.');
-        } else if (['+', '-', '*', '/', '%'].includes(key)) {
-            handleInput('operator', key);
-        } else if (key === 'Enter' || key === '=') {
-            handleInput('calculate');
-        } else if (key === 'Backspace') {
-            handleInput('backspace');
-        } else if (key === 'Escape') {
-            handleInput('clear');
-        }
-    });
-    
-    // Handle calculator input
-    function handleInput(action, value) {
-        switch (action) {
-            case 'number':
-                inputNumber(value);
-                break;
-            case 'decimal':
-                inputDecimal();
-                break;
-            case 'operator':
-                inputOperator(value);
-                break;
-            case 'calculate':
-                calculate();
-                break;
-            case 'clear':
-                clearAll();
-                break;
-            case 'backspace':
-                backspace();
-                break;
-            case 'memory':
-                handleMemory(value);
-                break;
-            case 'function':
-                applyFunction(value);
-                break;
-            case 'power':
-                applyPower(value);
-                break;
-            case 'constant':
-                inputConstant(value);
-                break;
-            case 'factorial':
-                calculateFactorial();
-                break;
-        }
-        
-        updateDisplay();
-    }
-    
-    // Input a number
-    function inputNumber(num) {
-        if (currentInput === '0' || lastResult !== null) {
-            currentInput = num;
-            lastResult = null;
-        } else {
-            currentInput += num;
-        }
-    }
-    
-    // Input decimal point
-    function inputDecimal() {
-        if (lastResult !== null) {
-            currentInput = '0.';
-            lastResult = null;
-        } else if (!currentInput.includes('.')) {
-            currentInput += '.';
-        }
-    }
-    
-    // Input operator
-    function inputOperator(op) {
-        if (lastResult !== null) {
-            currentExpression = lastResult + ' ' + op + ' ';
-            currentInput = '0';
-            lastResult = null;
-        } else {
-            if (currentExpression.endsWith(' ') && 
-                ['+', '-', '*', '/', '%', '^'].some(operator => 
-                    currentExpression.endsWith(operator + ' '))) {
-                // Replace the last operator
-                currentExpression = currentExpression.slice(0, -2) + op + ' ';
-            } else {
-                currentExpression += currentInput + ' ' + op + ' ';
-                currentInput = '0';
-            }
-        }
-    }
-    
-    // Calculate result
-    function calculate() {
-        if (currentExpression === '' && lastResult === null) {
-            // Nothing to calculate
-            return;
-        }
-        
-        try {
-            let fullExpression = currentExpression + currentInput;
-            
-            // Handle special case where the expression starts with a result
-            if (lastResult !== null) {
-                fullExpression = lastResult;
-            }
-            
-            // Format expression for display
-            const displayExpression = formatExpression(fullExpression);
-            
-            // Prepare expression for evaluation
-            let evalExpression = fullExpression
-                .replace(/×/g, '*')
-                .replace(/÷/g, '/')
-                .replace(/−/g, '-')
-                .replace(/\^/g, '**')
-                .replace(/%/g, '*0.01');
-            
-            // Evaluate the expression
-            const evalResult = eval(evalExpression);
-            
-            // Format the result
-            const formattedResult = formatNumber(evalResult);
-            
-            // Add to history
-            addToHistory(displayExpression, formattedResult);
-            
-            // Update calculator state
-            lastResult = formattedResult;
-            currentExpression = '';
-            currentInput = formattedResult;
-            
-        } catch (error) {
-            // Handle calculation error
-            result.textContent = 'Error';
-            setTimeout(() => {
-                clearAll();
-                updateDisplay();
-            }, 1500);
-        }
-    }
-    
-    // Clear all inputs
-    function clearAll() {
-        currentInput = '0';
-        currentExpression = '';
-        lastResult = null;
-    }
-    
-    // Backspace function
-    function backspace() {
-        if (lastResult !== null) {
-            clearAll();
-        } else {
-            currentInput = currentInput.length > 1 ? 
-                currentInput.slice(0, -1) : '0';
-        }
-    }
-    
-    // Handle memory functions
-    function handleMemory(action) {
-        const memoryKeys = document.querySelectorAll('.calculator-memory-key');
-        
-        switch (action) {
-            case 'mc': // Memory Clear
-                memory = 0;
-                isMemorySet = false;
-                break;
-            case 'mr': // Memory Recall
-                if (isMemorySet) {
-                    currentInput = memory.toString();
-                    lastResult = null;
-                }
-                break;
-            case 'm+': // Memory Add
-                memory += parseFloat(currentInput);
-                isMemorySet = true;
-                break;
-            case 'm-': // Memory Subtract
-                memory -= parseFloat(currentInput);
-                isMemorySet = true;
-                break;
-            case 'ms': // Memory Store
-                memory = parseFloat(currentInput);
-                isMemorySet = true;
-                break;
-        }
-        
-        // Update memory keys
-        memoryKeys.forEach(key => {
-            if (['mc', 'mr'].includes(key.dataset.value)) {
-                key.classList.toggle('active', isMemorySet);
-            }
-        });
-    }
-    
-    // Apply scientific functions
-    function applyFunction(func) {
-        const input = parseFloat(currentInput);
-        let result;
-        
-        switch (func) {
-            case 'sin':
-                result = Math.sin(input * (Math.PI / 180)); // Convert degrees to radians
-                break;
-            case 'cos':
-                result = Math.cos(input * (Math.PI / 180));
-                break;
-            case 'tan':
-                result = Math.tan(input * (Math.PI / 180));
-                break;
-            case 'sqrt':
-                result = Math.sqrt(input);
-                break;
-            case 'log':
-                result = Math.log10(input);
-                break;
-            case 'ln':
-                result = Math.log(input);
-                break;
-        }
-        
-        // Format expression for history
-        const displayExpression = `${func}(${currentInput})`;
-        const formattedResult = formatNumber(result);
-        
-        // Add to history
-        addToHistory(displayExpression, formattedResult);
-        
-        // Update calculator state
-        lastResult = formattedResult;
-        currentInput = formattedResult;
-        currentExpression = '';
-    }
-    
-    // Apply power functions
-    function applyPower(power) {
-        const input = parseFloat(currentInput);
-        let result;
-        
-        switch (power) {
-            case '2':
-                result = Math.pow(input, 2);
-                break;
-            case '3':
-                result = Math.pow(input, 3);
-                break;
-        }
-        
-        // Format expression for history
-        const displayExpression = `${currentInput}^${power}`;
-        const formattedResult = formatNumber(result);
-        
-        // Add to history
-        addToHistory(displayExpression, formattedResult);
-        
-        // Update calculator state
-        lastResult = formattedResult;
-        currentInput = formattedResult;
-        currentExpression = '';
-    }
-    
-    // Input mathematical constants
-    function inputConstant(value) {
-        currentInput = value;
-        lastResult = null;
-    }
-    
-    // Calculate factorial
-    function calculateFactorial() {
-        const input = parseInt(currentInput);
-        
-        if (input < 0 || input > 170 || input !== parseFloat(currentInput)) {
-            result.textContent = 'Error';
-            setTimeout(() => {
-                clearAll();
-                updateDisplay();
-            }, 1500);
-            return;
-        }
-        
-        let factorial = 1;
-        for (let i = 2; i <= input; i++) {
-            factorial *= i;
-        }
-        
-        // Format expression for history
-        const displayExpression = `${currentInput}!`;
-        const formattedResult = formatNumber(factorial);
-        
-        // Add to history
-        addToHistory(displayExpression, formattedResult);
-        
-        // Update calculator state
-        lastResult = formattedResult;
-        currentInput = formattedResult;
-        currentExpression = '';
-    }
-    
-    // Update display
-    function updateDisplay() {
-        result.textContent = currentInput;
-        expression.textContent = formatExpression(currentExpression);
-    }
-    
-    // Format expression for display
-    function formatExpression(expr) {
-        return expr
-            .replace(/\*/g, '×')
-            .replace(/\//g, '÷')
-            .replace(/-/g, '−');
-    }
-    
-    // Format number for display
-    function formatNumber(num) {
-        if (isNaN(num) || !isFinite(num)) {
-            return 'Error';
-        }
-        
-        // Convert to string and check if it's an integer
-        const numStr = num.toString();
-        if (numStr.includes('e')) {
-            // Handle scientific notation
-            return numStr;
-        }
-        
-        // For normal numbers, limit decimal places
-        return parseFloat(num.toFixed(10)).toString();
-    }
-    
-    // Add calculation to history
-    function addToHistory(expr, result) {
-        calculationHistory.unshift({ expression: expr, result: result });
-        
-        // Limit history to 10 items
-        if (calculationHistory.length > 10) {
-            calculationHistory.pop();
-        }
-        
-        updateHistoryDisplay();
-    }
-    
-    // Update history display
-    function updateHistoryDisplay() {
-        historyItems.innerHTML = '';
-        
-        if (calculationHistory.length === 0) {
-            historyItems.innerHTML = '<div class="calculator-history-empty">No calculations yet</div>';
-            return;
-        }
-        
-        calculationHistory.forEach(item => {
-            const historyItem = document.createElement('div');
-            historyItem.className = 'calculator-history-item';
-            historyItem.innerHTML = `
-                <div class="calculator-history-expression">${item.expression} =</div>
-                <div class="calculator-history-result">${item.result}</div>
-            `;
-            
-            // Add click event to reuse calculation
-            historyItem.addEventListener('click', () => {
-                currentInput = item.result;
-                lastResult = item.result;
-                currentExpression = '';
-                updateDisplay();
-            });
-            
-            historyItems.appendChild(historyItem);
-        });
-    }
-}
-</script> 
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="../pages/about.html">About</a>
+            <a href="../pages/contact.html">Contact</a>
+            <a href="../pages/privacy.html">Privacy Policy</a>
+            <a href="../pages/guide.html">User Guide</a>
+        </div>
+        <div class="copyright" id="copyright">
+            &copy; <span id="current-year">2023</span> Advanced Tools Website. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+</body>
+</html> 

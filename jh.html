@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<script src="https://kit.fontawesome.com/7783539ae2.js" crossorigin="anonymous"></script>
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7fa;
+        color: #333;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: 250px;
+        background-color: #2c3e50;
+        color: #fff;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-item:hover {
+        background-color: #34495e;
+    }
+
+    .nav-item.active {
+        background-color: #1abc9c;
+    }
+
+    .nav-item i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+
+    .nav-item span {
+        font-size: 16px;
+    }
+
+    /* Content Styles */
+    .content {
+        flex-grow: 1;
+        padding: 13px;
+        background-color: #fff;
+        margin: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-section {
+        display: none;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .content-section h2 {
+        margin-top: 0;
+        color: #2c3e50;
+        text-align: center;
+    }
+
+    .content-section p {
+        line-height: 1.6;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            height: auto;
+            padding: 10px;
+        }
+
+        .nav-item span {
+            display: none;
+        }
+
+        .content {
+            margin: 10px;
+        }
+    }
+
+    .precontainer {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    textarea {
+        width: 100%;
+        height: 150px;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    pre {
+        background: #282c34;
+        color: #abb2bf;
+        padding: 15px;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-top: 20px;
+        max-height: 600px;
+    }
+
+    .output {
+        margin-top: 20px;
+    }
+</style>
+<style>
+    .precontainer {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #codeInput {
+        width: 100%;
+        height: 150px;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    pre {
+        background: #282c34;
+        color: #abb2bf;
+        padding: 15px;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+
+    .output {
+        margin-top: 20px;
+    }
+</style>
+<style>
+    .randomcolor {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        flex-direction: column;
+    }
+
+    .color-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+        margin-top: 12px;
+    }
+
+    .color-box {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: bold;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .color-box:hover {
+        transform: scale(1.1);
+    }
+
+    .randombtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        width: 20%;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .randombtn:hover {
+        background-color: #0056b3;
+    }
+
+    .randompre {
+        background-color: #282c34;
+        color: #2eb728;
+        padding: 30px;
+        border-radius: 5px;
+        max-width: 100%;
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+
+    code {
+        font-family: 'Courier New', Courier, monospace;
+    }
+</style>
+<style>
+    .tgs {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f9;
+        color: #333;
+    }
+
+    .tagscontainer {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #inputTags {
+        width: 100%;
+        height: 100px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    #outputTags {
+        width: 100%;
+        height: 300px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .button-tagscontainer {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    #processBtn,
+    #copyBtn,
+    #nextBtn,
+    #pasteBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #processBtn {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    #processBtn:hover {
+        background-color: #218838;
+    }
+
+    #copyBtn {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    #copyBtn:hover {
+        background-color: #0056b3;
+    }
+
+    #nextBtn {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    #nextBtn:hover {
+        background-color: #e0a800;
+    }
+
+    #pasteBtn {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    #pasteBtn:hover {
+        background-color: #5a6268;
+    }
+
+    /* Animation for copied text */
+    @keyframes copied {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .copied {
+        animation: copied 0.5s ease;
+    }
+
+    #output {
+        margin-top: 20px;
+    }
+</style>
+<style>
+    .tgs {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f9;
+        color: #333;
+    }
+
+    .tagscontainer2 {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #inputTags2 {
+        width: 100%;
+        height: 100px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    #outputTags2 {
+        width: 100%;
+        height: 220px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .button-tagscontainer2 {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    #processBtn2,
+    #copyBtn2,
+    #nextBtn2,
+    #pasteBtn2 {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #processBtn2 {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    #processBtn2:hover {
+        background-color: #218838;
+    }
+
+    #copyBtn2 {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    #copyBtn2:hover {
+        background-color: #0056b3;
+    }
+
+    #nextBtn2 {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    #nextBtn2:hover {
+        background-color: #e0a800;
+    }
+
+    #pasteBtn2 {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    #pasteBtn2:hover {
+        background-color: #5a6268;
+    }
+
+    /* Animation for copied text */
+    @keyframes copied {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .copied {
+        animation: copied 0.5s ease;
+    }
+
+    #output2 {
+        margin-top: 20px;
+    }
+
+    .output-line2 {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .output-line2 button {
+        margin-left: 10px;
+        width: fit-content;
+        padding: 4px 7px;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .output-line2 button:hover {
+        background-color: #c82333;
+    }
+</style>
+  <style>
+    .app-container {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 600px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .dropdown-container {
+      flex: 1;
+      text-align: left;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .output {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      text-align: left;
+      display: none;
+    }
+
+    pre {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    .copy-button, .powershell-button, .check-button {
+      margin-top: 10px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .powershell-button {
+      background-color: #ff5722;
+    }
+
+    .check-button {
+      background-color: #17a2b8;
+    }
+
+    .copy-button:hover, .powershell-button:hover, .check-button:hover {
+      opacity: 0.9;
+    }
+
+    .textarea-container {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .textarea-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      background-color: #066b17;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+
+    textarea {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      resize: none;
+      height: 20px;
+      background-color: #313030;
+      color: #ffffff;
+      transition: border-color 0.3s ease;
+      width: calc(100% - 90px);
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .copy-textarea-button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      width: 80px;
+    }
+
+    .copy-textarea-button:hover {
+      background-color: #0056b3;
+      transform: translateY(-1px);
+    }
+
+    .copy-textarea-button:active {
+      transform: translateY(0);
+    }
+  </style>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">Dashboard</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-content="home">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </li>
+                <li class="nav-item" data-content="mymenu">
+                    <i class="fa-solid fa-tag"></i>
+                    <span>Remove Tags Commas</span>
+                </li>
+                <li class="nav-item" data-content="addhashtags">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <span>Add Hash Tags </span>
+                </li>
+                <li class="nav-item" data-content="sunil">
+                    <i class="fa-solid fa-code"></i>
+                    <span>Pretag Generator</span>
+                </li>
+                <li class="nav-item" data-content="pricing">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Random Color</span>
+                </li>
+                <li class="nav-item" data-content="biodata">
+                  <a href="https://sunilsangovar.github.io/Bio-Data-Print" style="text-decoration: none; color: white;">
+                    <i class="fa-solid fa-user-pen"></i>
+                    <span>Generate Bio Data</span>
+                  </a>
+                </li>
+                <li class="nav-item" data-content="gemini-ai">
+                  <a href="https://sunilsangovar.github.io/Gemini-AI-Tool" style="text-decoration: none; color: white;">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>Gemini AI Tool</span>
+                  </a>
+                </li>
+                <li class="nav-item" data-content="gemini-ai">
+                  <a href="https://vd6s.com/en/" style="text-decoration: none; color: white;">
+                    <i class="fa-solid fa-download"></i>
+                    <span>YT Video Download</span>
+                  </a>
+                </li>
+                <li class="nav-item" data-content="Execution-Policy-Generator">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Execution Policy Generator</span>
+                </li>
+                <li class="nav-item" data-content="promotion">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Promotion</span>
+                </li>
+                <li class="nav-item" data-content="promod">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>Age Calculator</span>
+                </li>
+                <li class="nav-item" data-content="lowmod">
+                    <i class="fa-solid fa-sitemap"></i>
+                    <span>Sitemap Generator</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content">
+            <div class="content-section" id="home">
+                <h2>Home</h2>
+                <p>Welcome to the Home section. This is where you can find an overview of your dashboard.</p>
+            </div>
+            <div class="content-section" id="mymenu">
+                <h2>Remove Tags Commas</h2>
+                <div class="tgs">
+                    <div class="tagscontainer">
+                        <textarea id="inputTags"
+                            placeholder="Enter tags separated by commas (e.g., shorts, shorts video, trending shorts)"></textarea>
+                        <div class="button-tagscontainer">
+                            <button id="pasteBtn">Paste</button>
+                            <button id="processBtn">Process Tags</button>
+                            <button id="copyBtn">Copy Output</button>
+                            <button id="nextBtn">Next Tags</button>
+                        </div>
+                        <div id="output">
+                            <textarea id="outputTags" readonly
+                                placeholder="Processed output will appear here"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-section" id="addhashtags">
+                <h2>Add Hash Tags</h2>
+                <div class="tgs">
+                    <div class="tagscontainer2">
+                        <textarea id="inputTags2"
+                            placeholder="Enter tags separated by commas (e.g., shorts, shorts video, trending shorts)"></textarea>
+                        <div class="button-tagscontainer2">
+                            <button id="pasteBtn2">Paste</button>
+                            <button id="processBtn2">Process Tags</button>
+                            <button id="copyBtn2">Copy Output</button>
+                            <button id="nextBtn2">Next Tags</button>
+                        </div>
+                        <div id="output2">
+                            <textarea id="outputTags2" readonly placeholder="Processed output will appear here"></textarea>
+                            <div id="outputLines2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-section" id="sunil">
+                <h2>Pretag Generator</h2>
+                <div class="precontainer">
+                    <textarea id="codeInput" placeholder="Enter your code here..."></textarea>
+                    <select id="languageSelect">
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="js">JavaScript</option>
+                    </select>
+                    <button onclick="generatePreTag()">Generate Pre Tag</button>
+                    <div class="output">
+                        <h2>Output:</h2>
+                        <pre id="outputPre"><code id="outputCode"></code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="content-section" id="pricing">
+                <h2>Random Color</h2>
+                <div class="randomcolor">
+                    <div class="color-container" id="colorContainer">
+                        <!-- Color boxes will be generated here -->
+                    </div>
+                    <button class="randombtn" onclick="generateColors()">Generate Colors</button>
+                    <pre class="randompre"><code id="codeSnippet">Click "Generate Colors" to see the magic!</code></pre>
+                </div>
+            </div>
+            <div class="content-section" id="Execution-Policy-Generator">
+                <h2>Execution Policy Generator</h2>
+                  <div class="app-container">
+    <div class="main-container">
+      <form id="policyForm">
+        <div class="form-group">
+          <div class="dropdown-container">
+            <label for="policyName">Execution Policy:</label>
+            <select id="policyName" required>
+              <option value="Restricted">Restricted</option>
+              <option value="AllSigned">AllSigned</option>
+              <option value="RemoteSigned">RemoteSigned</option>
+              <option value="Unrestricted">Unrestricted</option>
+              <option value="Bypass">Bypass</option>
+              <option value="Undefined">Undefined</option>
+            </select>
+          </div>
+          <div class="dropdown-container">
+            <label for="scope">Scope:</label>
+            <select id="scope" required>
+              <option value="Process">Process</option>
+              <option value="CurrentUser">CurrentUser</option>
+              <option value="LocalMachine">LocalMachine</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit">Generate Command</button>
+      </form>
+
+      <div id="output" class="output">
+        <h2>Generated Command:</h2>
+        <pre id="commandOutput"></pre>
+        <button class="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
+        <button class="powershell-button" onclick="runInPowerShell()">Run in PowerShell</button>
+      </div>
+
+      <div class="textarea-container">
+        <div class="textarea-group">
+          <textarea id="textArea1" readonly>(Get-ExecutionPolicy)</textarea>
+          <button class="copy-textarea-button" onclick="copyTextArea('textArea1')">Copy</button>
+        </div>
+        <div class="textarea-group">
+          <textarea id="textArea2" readonly>(Get-ExecutionPolicy -List)</textarea>
+          <button class="copy-textarea-button" onclick="copyTextArea('textArea2')">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+            </div>
+            <div class="content-section" id="promotion">
+                <h2>Promotion</h2>
+                <p>This is the Promotion section. Create and manage your promotions here.</p>
+            </div>
+            <div class="content-section" id="promod">
+                <h2>Promod</h2>
+                <p>This is the Promod section. Configure your settings here.</p>
+            </div>
+            <div class="content-section" id="lowmod">
+                <h2>Lowmod</h2>
+                <p>This is the Lowmod section. Manage low-level configurations here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>// JavaScript to handle navigation and content display
+        document.addEventListener('DOMContentLoaded', function () {
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    // Remove active class from all items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+
+                    // Hide all content sections
+                    contentSections.forEach(section => section.style.display = 'none');
+
+                    // Show the corresponding content section
+                    const contentId = this.getAttribute('data-content');
+                    document.getElementById(contentId).style.display = 'block';
+                });
+            });
+
+            // Show the home section by default
+            document.getElementById('home').style.display = 'block';
+        });</script>
+</body>
+<script>
+    function generatePreTag() {
+        const codeInput = document.getElementById('codeInput').value;
+        const languageSelect = document.getElementById('languageSelect').value;
+        const outputCode = document.getElementById('outputCode');
+
+        // Clear previous content
+        outputCode.innerHTML = '';
+
+        // Add syntax highlighting based on selected language
+        if (languageSelect === 'html') {
+            outputCode.innerHTML = highlightHTML(codeInput);
+        } else if (languageSelect === 'css') {
+            outputCode.innerHTML = highlightCSS(codeInput);
+        } else if (languageSelect === 'js') {
+            outputCode.innerHTML = highlightJS(codeInput);
+        }
+    }
+
+    function highlightHTML(code) {
+        return code.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"(.*?)"/g, '<span style="color: #e06c75;">"$1"</span>')
+            .replace(/&lt;(.*?)&gt;/g, '<span style="color: #e06c75;">&lt;$1&gt;</span>');
+    }
+
+    function highlightCSS(code) {
+        return code.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/(.*?):/g, '<span style="color: #e06c75;">$1</span>:')
+            .replace(/{/g, '<span style="color: #d19a66;">{</span>')
+            .replace(/}/g, '<span style="color: #d19a66;">}</span>');
+    }
+
+    function highlightJS(code) {
+        return code.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\b(function|return|let|const|var|if|else|for|while|console)\b/g, '<span style="color: #c678dd;">$1</span>')
+            .replace(/(".*?"|'.*?')/g, '<span style="color: #98c379;">$1</span>');
+    }
+</script>
+<script>
+    function generateColors() {
+        const colorContainer = document.getElementById('colorContainer');
+        colorContainer.innerHTML = ''; // Clear previous colors
+
+        let colors = [];
+        for (let i = 0; i < 12; i++) {
+            const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+            colors.push(color);
+            const colorBox = document.createElement('div');
+            colorBox.className = 'color-box';
+            colorBox.style.backgroundColor = color;
+            colorBox.innerText = color;
+            colorBox.onclick = () => navigator.clipboard.writeText(color).then(() => alert(`Copied: ${color}`));
+            colorContainer.appendChild(colorBox);
+        }
+
+        // Update the code snippet
+        const codeSnippet = document.getElementById('codeSnippet');
+        codeSnippet.innerHTML = `Generated Colors:\n${colors.join('\n')}`;
+    }
+
+    // Initial color generation
+    generateColors();
+</script>
+<script>
+    document.getElementById('processBtn').addEventListener('click', function () {
+        const inputTags = document.getElementById('inputTags').value;
+        const processedTags = inputTags.replace(/,/g, '\n');
+        document.getElementById('outputTags').value = processedTags;
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', function () {
+        const outputTags = document.getElementById('outputTags');
+        outputTags.select();
+        document.execCommand('copy');
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', function () {
+        document.getElementById('inputTags').value = '';
+        document.getElementById('outputTags').value = '';
+    });
+
+    document.getElementById('pasteBtn').addEventListener('click', async function () {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('inputTags').value = text;
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+        }
+    });
+</script>
+<script>
+    document.getElementById('processBtn2').addEventListener('click', function () {
+        const inputTags = document.getElementById('inputTags2').value;
+        const processedTags = inputTags
+            .split(',')
+            .map(tag => tag.trim())
+            .map(tag => `#${tag.replace(/\s+/g, '')}`)
+            .join('\n');
+        document.getElementById('outputTags2').value = processedTags;
+        updateOutputLines(processedTags);
+    });
+
+    document.getElementById('copyBtn2').addEventListener('click', function () {
+        const outputTags = document.getElementById('outputTags2');
+        outputTags.select();
+        document.execCommand('copy');
+    });
+
+    document.getElementById('nextBtn2').addEventListener('click', function () {
+        document.getElementById('inputTags2').value = '';
+        document.getElementById('outputTags2').value = '';
+        document.getElementById('outputLines2').innerHTML = '';
+    });
+
+    document.getElementById('pasteBtn2').addEventListener('click', async function () {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('inputTags2').value = text;
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+        }
+    });
+
+    function updateOutputLines(processedTags) {
+        const outputLinesContainer = document.getElementById('outputLines2');
+        outputLinesContainer.innerHTML = '';
+        const lines = processedTags.split('\n');
+        lines.forEach((line, index) => {
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'output-line2';
+            lineDiv.textContent = line;
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.addEventListener('click', () => removeLine(index));
+            lineDiv.appendChild(removeButton);
+            outputLinesContainer.appendChild(lineDiv);
+        });
+    }
+
+    function removeLine(index) {
+        const outputTags = document.getElementById('outputTags2');
+        const lines = outputTags.value.split('\n');
+        lines.splice(index, 1);
+        outputTags.value = lines.join('\n');
+        updateOutputLines(outputTags.value);
+    }
+</script>
+      <script>
+    document.getElementById('policyForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const policyName = document.getElementById('policyName').value;
+      const scope = document.getElementById('scope').value;
+      const command = `Set-ExecutionPolicy -ExecutionPolicy ${policyName} -Scope ${scope}`;
+
+      document.getElementById('commandOutput').textContent = command;
+      document.getElementById('output').style.display = 'block';
+    });
+
+    function copyToClipboard() {
+      const commandOutput = document.getElementById('commandOutput');
+      const textToCopy = commandOutput.textContent;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => {
+            alert('Command copied to clipboard!');
+          })
+          .catch(() => {
+            copyUsingLegacyMethod(textToCopy);
+          });
+      } else {
+        copyUsingLegacyMethod(textToCopy);
+      }
+    }
+
+    function copyUsingLegacyMethod(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        alert('Command copied to clipboard!');
+      } catch (err) {
+        alert('Failed to copy command.');
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    function runInPowerShell() {
+      const commandOutput = document.getElementById('commandOutput');
+      const command = commandOutput.textContent;
+
+      if (!command) {
+        alert('Please generate a command first.');
+        return;
+      }
+
+      alert(`To run this command in PowerShell:
+1. Open PowerShell.
+2. Paste the following command and press Enter:
+\n${command}`);
+    }
+
+    function copyTextArea(textAreaId) {
+      const textArea = document.getElementById(textAreaId);
+      const textToCopy = textArea.value;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => {
+            alert('Text copied to clipboard!');
+          })
+          .catch(() => {
+            copyUsingLegacyMethod(textToCopy);
+          });
+      } else {
+        copyUsingLegacyMethod(textToCopy);
+      }
+    }
+  </script>
+</html>
